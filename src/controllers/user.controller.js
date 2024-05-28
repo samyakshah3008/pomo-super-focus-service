@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import { generateOTP } from "../constants.js";
+import { OTP } from "../models/otp.model.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/apiError.js";
@@ -45,19 +47,65 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(409, "User with username already exists");
   }
 
-  const user = await User.create({ email, username, password });
+  const otp = generateOTP();
+  const otpPayload = { email, otp };
 
-  const registeredUser = await User.findById(user._id).select(
-    "-password -refreshToken"
-  );
+  try {
+    await OTP.create(otpPayload);
 
-  if (!registeredUser) {
-    throw new ApiError(500, "Something went wrong while registering a user");
+    res.status(200).json({ msg: "OTP sent successfully", otp });
+  } catch (error) {
+    console.error("something went wrong", error);
+  }
+});
+
+const verifyOTP = asyncHandler(async (req, res, next) => {
+  const { email, username, password, otp } = req.body;
+
+  if ([email, username, password, otp].some((field) => field?.trim() === "")) {
+    throw new ApiError(400, "All fields are required");
   }
 
-  return res
-    .status(201)
-    .json(new ApiResponse(200, registeredUser, "User registered successfully"));
+  try {
+    const findRegisteringEmail = await OTP.findOne({ email });
+    if (!findRegisteringEmail._id) {
+      return next(new ApiError(401, "OTP expired, please resend the otp"));
+    }
+    if (findRegisteringEmail.otp !== otp) {
+      return next(new ApiError(401, "Incorrect OTP, please try again."));
+    }
+
+    const user = await User.create({ email, username, password });
+
+    const registeredUser = await User.findById(user._id).select(
+      "-password -refreshToken"
+    );
+
+    if (!registeredUser) {
+      return next(
+        new ApiError(500, "Something went wrong while registering a user")
+      );
+    }
+
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
+
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json(
+        new ApiResponse(200, "User registered successfully", registeredUser)
+      );
+  } catch (err) {
+    return next(new ApiError(500, "Something went wrong", err));
+  }
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -103,31 +151,6 @@ const loginUser = asyncHandler(async (req, res) => {
         "User logged In successfully. "
       )
     );
-});
-
-const logoutUser = asyncHandler(async (req, res) => {
-  await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $set: {
-        refreshToken: undefined,
-      },
-    },
-    {
-      new: true,
-    }
-  );
-
-  const options = {
-    httpOnly: true,
-    secure: true,
-  };
-
-  return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged out successfully"));
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -178,4 +201,29 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
-export { loginUser, logoutUser, refreshAccessToken, registerUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: undefined,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
+
+export { loginUser, logoutUser, refreshAccessToken, registerUser, verifyOTP };
