@@ -10,10 +10,6 @@ const userSchema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
-      validate: {
-        validator: (value) => /^[a-z0-9_]+$/.test(value),
-        message: (props) => `${props.value} is not a valid username!`,
-      },
     },
     email: {
       type: String,
