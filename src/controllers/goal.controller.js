@@ -13,7 +13,7 @@ const getGoals = asyncHandler(async (req, res) => {
   }
   try {
     const goalsList = await Goal.find({ userId });
-    res.status(200).json(new ApiResponse(200, goalsList));
+    return res.status(200).json(new ApiResponse(200, goalsList));
   } catch (e) {
     throw new ApiError(500, "Something went wrong while retrieving goals");
   }
@@ -76,6 +76,10 @@ const updateGoal = asyncHandler(async (req, res) => {
       new: true,
       runValidators: true,
     });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Goal updated successfully"));
   } catch (e) {
     throw new ApiError(500, "Something went wrong while updating goal");
   }
@@ -89,7 +93,10 @@ const deleteGoal = asyncHandler(async (req, res) => {
 
   try {
     await Goal.findByIdAndDelete(goalId);
-    res.status(200).json(new ApiResponse(200, "Goal deleted successfully"));
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "Goal deleted successfully"));
   } catch (e) {
     throw new ApiError(500, "Something went wrong while deleting the goal");
   }
