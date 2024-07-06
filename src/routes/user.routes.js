@@ -20,4 +20,9 @@ router.route("/signin/verify-otp").post(verifyOTPAndSigninUserController);
 router.route("/logout").post(verifyJWT, logoutUserController);
 router.route("/refresh-access-token").post(refreshAccessTokenController);
 
+router.route("/goals").get(verifyJWT, getGoals);
+router.route("/goals").post(verifyJWT, createGoal);
+router.route("/goals").put(verifyJWT, updateGoal);
+router.route("/goals").delete(verifyJWT, deleteGoal);
+
 export default router;
