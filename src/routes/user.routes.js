@@ -1,5 +1,11 @@
 import { Router } from "express";
 import {
+  createGoal,
+  deleteGoal,
+  getGoals,
+  updateGoal,
+} from "../controllers/goal.controller.js";
+import {
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -17,5 +23,10 @@ router.route("/verify-otp").post(verifyOTP);
 // secured routes
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-access-token").post(refreshAccessToken);
+
+router.route("/goals").get(verifyJWT, getGoals);
+router.route("/goals").post(verifyJWT, createGoal);
+router.route("/goals").put(verifyJWT, updateGoal);
+router.route("/goals").delete(verifyJWT, deleteGoal);
 
 export default router;
