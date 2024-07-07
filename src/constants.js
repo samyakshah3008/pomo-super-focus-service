@@ -19,3 +19,9 @@ export const cookieOptions = {
   httpOnly: true,
   secure: true,
 };
+
+export const guestUserDetails = {
+  firstName: "Jethalal",
+  lastName: "Gada",
+  isGuestUser: true,
+};
