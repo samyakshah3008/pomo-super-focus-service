@@ -6,6 +6,7 @@ import {
   verifyOtpAndSigninUser,
 } from "../../services/user/auth/signinService.js";
 import {
+  signupGuest,
   signupUser,
   verifyOTPAndRegisterUser,
 } from "../../services/user/auth/signupService.js";
@@ -24,7 +25,7 @@ const signupUserController = asyncHandler(async (req, res) => {
       return res.status(error.statusCode).json(error);
     }
     return res.status(500).send(
-      new ApiError(500, {
+      new ApiError(500, error, {
         error:
           "Something went wrong with servers while sending OTP, please try again later.",
       })
@@ -56,6 +57,30 @@ const verifyOTPAndRegisterUserController = asyncHandler(
   }
 );
 
+const signupGuestController = asyncHandler(async (req, res) => {
+  try {
+    const { accessToken, refreshToken, registeredUser } = await signupGuest();
+    return res
+      .status(201)
+      .cookie("accessToken", accessToken, cookieOptions)
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .json(
+        new ApiResponse(200, registeredUser, "User registered successfully")
+      );
+  } catch (error) {
+    console.log(error);
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res.status(500).send(
+      new ApiError(500, error, {
+        error:
+          "Something went wrong with servers while sending OTP, please try again later.",
+      })
+    );
+  }
+});
+
 const signinUserController = asyncHandler(async (req, res) => {
   const { userDetails } = req.body;
 
@@ -67,7 +92,7 @@ const signinUserController = asyncHandler(async (req, res) => {
       return res.status(error.statusCode).json(error);
     }
     return res.status(500).send(
-      new ApiError(500, {
+      new ApiError(500, error, {
         error:
           "Something went wrong with servers while sending OTP, please try again later.",
       })
@@ -98,7 +123,7 @@ const verifyOTPAndSigninUserController = asyncHandler(
       if (error instanceof ApiError) {
         return res.status(error.statusCode).json(error);
       }
-      return next(new ApiError(500, "Something went wrong", error));
+      return next(new ApiError(500, error, "Something went wrong"));
     }
   }
 );
@@ -145,6 +170,7 @@ export {
   logoutUserController,
   refreshAccessTokenController,
   signinUserController,
+  signupGuestController,
   signupUserController,
   verifyOTPAndRegisterUserController,
   verifyOTPAndSigninUserController,
