@@ -1,8 +1,15 @@
 import { Router } from "express";
 import {
+  createGoal,
+  deleteGoal,
+  getGoals,
+  updateGoal,
+} from "../controllers/goal.controller.js";
+import {
   logoutUserController,
   refreshAccessTokenController,
   signinUserController,
+  signupGuestController,
   signupUserController,
   verifyOTPAndRegisterUserController,
   verifyOTPAndSigninUserController,
@@ -13,6 +20,7 @@ const router = Router();
 
 router.route("/signup").post(signupUserController);
 router.route("/signup/verify-otp").post(verifyOTPAndRegisterUserController);
+router.route("/signup/guest").post(signupGuestController);
 router.route("/signin").post(signinUserController);
 router.route("/signin/verify-otp").post(verifyOTPAndSigninUserController);
 
