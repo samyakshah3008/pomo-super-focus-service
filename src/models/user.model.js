@@ -5,7 +5,9 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: function () {
+        return !this.isGuestUser;
+      },
       unique: true,
       lowercase: true,
       trim: true,
@@ -22,6 +24,10 @@ const userSchema = new Schema(
     refreshToken: {
       type: String,
     },
+    isGuestUser: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
@@ -30,7 +36,6 @@ userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
-      username: this.username,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

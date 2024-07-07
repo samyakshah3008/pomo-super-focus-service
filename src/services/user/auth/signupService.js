@@ -1,4 +1,4 @@
-import { generateOTP } from "../../../constants.js";
+import { generateOTP, guestUserDetails } from "../../../constants.js";
 import { OTP } from "../../../models/otp.model.js";
 import { User } from "../../../models/user.model.js";
 import { ApiError } from "../../../utils/apiError.js";
@@ -80,4 +80,32 @@ const verifyOTPAndRegisterUser = async (userDetails, otp) => {
   };
 };
 
-export { signupUser, verifyOTPAndRegisterUser };
+const signupGuest = async () => {
+  const { firstName, lastName, isGuestUser = true } = guestUserDetails;
+
+  const user = await User.create({
+    firstName,
+    lastName,
+    isGuestUser,
+  });
+
+  const registeredUser = await User.findById(user._id).select("-refreshToken");
+
+  if (!registeredUser) {
+    throw new ApiError(500, {
+      error: "Something went wrong while registering user.",
+    });
+  }
+
+  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+    user._id
+  );
+
+  return {
+    accessToken,
+    refreshToken,
+    registeredUser,
+  };
+};
+
+export { signupGuest, signupUser, verifyOTPAndRegisterUser };
