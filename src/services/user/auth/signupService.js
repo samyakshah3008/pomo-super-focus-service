@@ -19,7 +19,7 @@ const signupUser = async (userDetails) => {
   const findRegisteredUserWithEmail = await User.findOne({ email });
 
   if (findRegisteredUserWithEmail) {
-    throw new ApiError(409, {
+    return new ApiResponse(200, {
       redirect: true,
       flow: "signup",
       message: "Account already exists",

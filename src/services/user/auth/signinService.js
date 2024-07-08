@@ -30,22 +30,28 @@ const signinUser = async (userDetails) => {
     throw new ApiError(400, { error: "Email is required" });
   }
 
-  const findRegisteredUserWithEmail = await User.find({ email });
+  const findRegisteredUserWithEmail = await User.findOne({ email });
 
   if (!findRegisteredUserWithEmail) {
-    throw new ApiError(409, {
-      redirect: true,
-      flow: "signin",
-      message: "Account doesn't exists",
-    });
+    return new ApiResponse(
+      200,
+      {
+        redirect: true,
+        flow: "signin",
+        message: "Account doesn't exists",
+      },
+      "Redirect to signup"
+    );
   }
+
+  await OTP.findOneAndDelete({ email });
 
   const otp = generateOTP();
   const otpPayload = { email, otp };
 
   await OTP.create(otpPayload);
 
-  return new ApiResponse(200, { otp }, "OTP sent successfully");
+  return new ApiResponse(200, {}, "OTP sent successfully");
 };
 
 const verifyOtpAndSigninUser = async (userDetails, otp) => {
@@ -62,11 +68,11 @@ const verifyOtpAndSigninUser = async (userDetails, otp) => {
   const findOTP = await OTP.findOne({ email });
 
   if (!findOTP || !findOTP._id) {
-    throw new ApiError(401, { error: "OTP expired, please resend the OTP" });
+    throw new ApiError(400, { error: "OTP expired, please resend the OTP" });
   }
 
   if (findOTP.otp !== otp) {
-    throw new ApiError(401, { error: "Incorrect OTP, please try again." });
+    throw new ApiError(400, { error: "Incorrect OTP, please try again." });
   }
 
   const findRegisteredUserWithEmail = await User.findOne({ email });
@@ -96,11 +102,11 @@ const refreshAccessToken = async (incomingRefreshToken) => {
     const user = await User.findById(decodedRefreshToken._id);
 
     if (!user) {
-      throw new ApiError(401, { error: "Invalid refresh token" });
+      throw new ApiError(400, { error: "Invalid refresh token" });
     }
 
     if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(401, { error: "Refresh token is expired or used" });
+      throw new ApiError(400, { error: "Refresh token is expired or used" });
     }
 
     const { accessToken, newRefreshToken } =
@@ -114,7 +120,7 @@ const refreshAccessToken = async (incomingRefreshToken) => {
 
     return { ApiResponse, accessToken, newRefreshToken };
   } catch (error) {
-    throw new ApiError(401, { error: "Invalid refresh token" });
+    throw new ApiError(400, { error: "Invalid refresh token" });
   }
 };
 
