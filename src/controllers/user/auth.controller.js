@@ -109,13 +109,13 @@ const verifyOTPAndSigninUserController = asyncHandler(
         await verifyOtpAndSigninUser(userDetails, otp);
 
       return res
-        .status(201)
+        .status(200)
         .cookie("accessToken", accessToken, cookieOptions)
         .cookie("refreshToken", refreshToken, cookieOptions)
         .json(
           new ApiResponse(
             200,
-            findRegisteredUserWithEmail,
+            { accessToken, refreshToken },
             "User Signed in successfully"
           )
         );
