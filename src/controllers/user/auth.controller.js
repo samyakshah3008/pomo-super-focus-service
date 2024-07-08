@@ -46,7 +46,12 @@ const verifyOTPAndRegisterUserController = asyncHandler(
         .cookie("accessToken", accessToken, cookieOptions)
         .cookie("refreshToken", refreshToken, cookieOptions)
         .json(
-          new ApiResponse(200, registeredUser, "User registered successfully")
+          new ApiResponse(
+            200,
+            { accessToken, refreshToken },
+
+            "User registered successfully"
+          )
         );
     } catch (error) {
       if (error instanceof ApiError) {
@@ -65,7 +70,11 @@ const signupGuestController = asyncHandler(async (req, res) => {
       .cookie("accessToken", accessToken, cookieOptions)
       .cookie("refreshToken", refreshToken, cookieOptions)
       .json(
-        new ApiResponse(200, registeredUser, "User registered successfully")
+        new ApiResponse(
+          200,
+          { accessToken, refreshToken },
+          "User registered successfully"
+        )
       );
   } catch (error) {
     console.log(error);
