@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { generateOTP } from "../../../constants.js";
 import { OTP } from "../../../models/otp.model.js";
 import { User } from "../../../models/user.model.js";
@@ -100,25 +101,25 @@ const refreshAccessToken = async (incomingRefreshToken) => {
     );
 
     const user = await User.findById(decodedRefreshToken._id);
-
     if (!user) {
       throw new ApiError(400, { error: "Invalid refresh token" });
     }
 
-    if (incomingRefreshToken !== user?.refreshToken) {
-      throw new ApiError(400, { error: "Refresh token is expired or used" });
-    }
+    // if (incomingRefreshToken !== user?.refreshToken) {
+    //   console.log("in the check block");
+    //   throw new ApiError(400, { error: "Refresh token is expired or used" });
+    // }
 
-    const { accessToken, newRefreshToken } =
-      await generateAccessAndRefreshTokens(user._id);
-
-    const ApiResponse = new ApiResponse(
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      user._id
+    );
+    const response = new ApiResponse(
       200,
-      { accessToken, newRefreshToken },
+      { accessToken, refreshToken },
       "Access token refreshed"
     );
 
-    return { ApiResponse, accessToken, newRefreshToken };
+    return { response, accessToken, refreshToken };
   } catch (error) {
     throw new ApiError(400, { error: "Invalid refresh token" });
   }

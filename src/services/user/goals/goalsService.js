@@ -43,7 +43,7 @@ export const createGoal = async (userId, goalDetails) => {
 };
 
 export const updateGoal = async (userId, goalDetails) => {
-  const { goalId, title, description, completed } = goalDetails;
+  const { goalId, title, description, completed = false } = goalDetails;
 
   if (!userId) {
     throw new ApiError(400, "Please provide user ID");

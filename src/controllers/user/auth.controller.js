@@ -140,15 +140,15 @@ const verifyOTPAndSigninUserController = asyncHandler(
 const refreshAccessTokenController = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
-
   try {
-    const { ApiResponse, accessToken, newRefreshToken } =
-      await refreshAccessToken(incomingRefreshToken);
+    const { response, accessToken, refreshToken } = await refreshAccessToken(
+      incomingRefreshToken
+    );
     return res
       .status(200)
       .cookie("accessToken", accessToken, cookieOptions)
-      .cookie("refreshToken", newRefreshToken, cookieOptions)
-      .json(ApiResponse);
+      .cookie("refreshToken", refreshToken, cookieOptions)
+      .json(response);
   } catch (error) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
