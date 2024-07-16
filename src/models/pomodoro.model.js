@@ -1,26 +1,25 @@
 import { Schema, model } from "mongoose";
 
-// This model will store the daily count of pomodoros completed by each user.
-
-const pomodoroSchema = new Schema(
-  {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    date: {
-      type: Date,
-      required: true,
-    },
-    pomodorosCompleted: {
-      type: Number,
-      default: 0,
-    },
+const pomodorosSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  { timestamps: true }
-);
+  date: {
+    type: Date,
+    required: true,
+  },
+  sessions: {
+    type: Number,
+    default: 0,
+  },
+  totalTime: {
+    type: Number,
+    default: 0,
+  },
+});
 
-pomodoroSchema.index({ user: 1, date: 1 }, { unique: true });
+pomodorosSchema.index({ userId: 1, date: 1 }, { unique: true });
 
-export const Pomodoro = model("Pomodoro", pomodoroSchema);
+export const Pomodoros = model("Pomodoros", pomodorosSchema);
