@@ -1,21 +1,24 @@
 import mongoose, { Schema } from "mongoose";
 import mailSender from "../utils/mailSender.js";
 
-const otpSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
+const otpSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    otp: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 60 * 5,
+    },
   },
-  otp: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    expires: 60 * 5,
-  },
-});
+  { timestamps: true }
+);
 
 async function sendVerificationEmail(email, otp) {
   try {

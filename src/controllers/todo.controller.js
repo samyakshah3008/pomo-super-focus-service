@@ -135,7 +135,7 @@ const deleteParticularTodo = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Todo id is required to delete a todo");
   }
 
-  const findTodoToDelete = Todo.findByIdAndDelete(todoId);
+  const findTodoToDelete = await Todo.findByIdAndDelete(todoId);
 
   if (!findTodoToDelete) {
     throw new ApiError(404, "Todo not found");
