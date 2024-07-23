@@ -1,7 +1,7 @@
-import { Goal } from "../../../models/goal.model.js";
-import { User } from "../../../models/user.model.js";
-import { ApiError } from "../../../utils/apiError.js";
-import { ApiResponse } from "../../../utils/ApiResponse.js";
+import { Goal } from "../../models/goal.model.js";
+import { User } from "../../models/user.model.js";
+import { ApiError } from "../../utils/apiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export const getGoals = async (userId) => {
   if (!userId) {

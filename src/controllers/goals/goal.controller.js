@@ -3,7 +3,7 @@ import {
   deleteGoal,
   getGoals,
   updateGoal,
-} from "../../services/user/goals/goalsService.js";
+} from "../../services/goals/goalsService.js";
 import { ApiError } from "../../utils/apiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
