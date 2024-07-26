@@ -1,6 +1,7 @@
 import { ActivePomodoros } from "../../models/active-pomodoro.model.js";
 import {
   deleteActivePomodoroService,
+  getActivePomodoroService,
   initializePomodoroService,
   pausePomodoroService,
   resumePomodoroService,
@@ -74,7 +75,7 @@ const pauseOrResumePomodoro = asyncHandler(async (req, res) => {
     }
   } else if (action == "resume") {
     try {
-      const response = await resumePomodoroService(userId, timeLeftInSeconds);
+      const response = await resumePomodoroService(userId);
       return res.status(response.statusCode).json(response);
     } catch (error) {
       if (error instanceof ApiError) {
@@ -91,16 +92,14 @@ const pauseOrResumePomodoro = asyncHandler(async (req, res) => {
 });
 
 const deleteActivePomodoro = asyncHandler(async (req, res) => {
-  const { activePomodoroId } = req.body;
+  const { userId } = req.query;
 
-  if (!activePomodoroId) {
-    return res.json(
-      new ApiError(400, { message: "active pomodoro id required. " })
-    );
+  if (!userId) {
+    return res.json(new ApiError(400, { message: "user id required. " }));
   }
 
   try {
-    const response = await deleteActivePomodoroService(activePomodoroId);
+    const response = await deleteActivePomodoroService(userId);
     return res.status(response.statusCode).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -115,4 +114,27 @@ const deleteActivePomodoro = asyncHandler(async (req, res) => {
   }
 });
 
-export { deleteActivePomodoro, initializePomodoro, pauseOrResumePomodoro };
+const getActivePomodoro = asyncHandler(async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const response = await getActivePomodoroService(userId);
+    return res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(500, { message: error?.message || "something went wrong" })
+      );
+  }
+});
+
+export {
+  deleteActivePomodoro,
+  getActivePomodoro,
+  initializePomodoro,
+  pauseOrResumePomodoro,
+};
