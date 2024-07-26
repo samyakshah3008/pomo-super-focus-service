@@ -35,13 +35,16 @@ const initializePomodoroService = async (userId, focusTimeInSeconds) => {
 };
 
 const pausePomodoroService = async (userId, timeLeftInSeconds) => {
+  if (!timeLeftInSeconds) {
+    return new ApiError(400, { message: "time left in seconds required." });
+  }
   const activePomodoro = await ActivePomodoros.findOne({
     userId,
     isPaused: false,
   });
 
   if (!activePomodoro) {
-    throw new ApiError(404, { message: "Session is already paused." });
+    return new ApiError(404, { message: "Session is already paused." });
   }
 
   const currentTime = new Date();
@@ -57,7 +60,7 @@ const pausePomodoroService = async (userId, timeLeftInSeconds) => {
   });
 };
 
-const resumePomodoroService = async (userId, timeLeftInSeconds) => {
+const resumePomodoroService = async (userId) => {
   const activePomodoro = await ActivePomodoros.findOne({
     userId,
     isPaused: true,
@@ -68,7 +71,6 @@ const resumePomodoroService = async (userId, timeLeftInSeconds) => {
 
   activePomodoro.isPaused = false;
   activePomodoro.startTime = new Date();
-  activePomodoro.timeLeftInSeconds = timeLeftInSeconds;
   activePomodoro.pausedAt = null;
 
   await activePomodoro.save();
@@ -78,9 +80,9 @@ const resumePomodoroService = async (userId, timeLeftInSeconds) => {
   });
 };
 
-const deleteActivePomodoroService = async (activePomodoroId) => {
+const deleteActivePomodoroService = async (userId) => {
   const findActivePomodoroSessionAndDelete =
-    await ActivePomodoros.findByIdAndDelete(activePomodoroId);
+    await ActivePomodoros.findOneAndDelete(userId);
 
   if (!findActivePomodoroSessionAndDelete) {
     throw new ApiError(404, { message: "Active pomodoro not found. " });
@@ -88,8 +90,27 @@ const deleteActivePomodoroService = async (activePomodoroId) => {
   return new ApiResponse(200, { message: "Active pomodoro deleted. " });
 };
 
+const getActivePomodoroService = async (userId) => {
+  if (!userId) {
+    return new ApiError(400, { message: "User Id is required. " });
+  }
+
+  const currentPomodoro = await ActivePomodoros.find({ userId });
+  if (!currentPomodoro?.length) {
+    return new ApiResponse(200, {
+      message: "No active pomodoro session ongoing. ",
+      found: false,
+    });
+  }
+  return new ApiResponse(200, {
+    found: true,
+    currentPomodoro: currentPomodoro[0],
+  });
+};
+
 export {
   deleteActivePomodoroService,
+  getActivePomodoroService,
   initializePomodoroService,
   pausePomodoroService,
   resumePomodoroService,
