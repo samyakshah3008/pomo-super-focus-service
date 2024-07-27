@@ -11,11 +11,13 @@ app.use(express.static("public"));
 app.use(cookieParser());
 
 import pomodoroRouter from "./routes/pomodoro.routes.js";
+import streakRouter from "./routes/streak.routes.js";
 import todoRouter from "./routes/todo.routes.js";
 import userRouter from "./routes/user.routes.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/todos", todoRouter);
 app.use("/api/v1/pomodoros", pomodoroRouter);
+app.use("/api/v1/streaks", streakRouter);
 
 export default app;
