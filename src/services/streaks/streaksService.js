@@ -82,4 +82,30 @@ const logDailyStreakService = async (userId, currentDate) => {
   }
 };
 
-export { logDailyStreakService };
+const updateDailyGoalFocusMinutesService = async (userId, newFocusMinutes) => {
+  if (!userId) {
+    return new ApiError(400, null, "userId required. ");
+  }
+
+  if (!newFocusMinutes) {
+    return new ApiError(400, null, "focus minutes are required.");
+  }
+
+  const streakDetails = await Streak.findOne({ userId });
+
+  if (!streakDetails) {
+    return new ApiError(404, null, "Streak Obj for user not found.");
+  }
+
+  streakDetails.dailyGoal = newFocusMinutes;
+
+  await streakDetails.save();
+
+  return new ApiResponse(
+    200,
+    { streakDetails },
+    "New Focus time updated successfully. "
+  );
+};
+
+export { logDailyStreakService, updateDailyGoalFocusMinutesService };
