@@ -14,6 +14,7 @@ import {
   verifyOTPAndRegisterUserController,
   verifyOTPAndSigninUserController,
 } from "../controllers/user/auth.controller.js";
+import { getDailyProgressStats } from "../controllers/user/daily-progress.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -32,5 +33,7 @@ router.route("/goals").get(verifyJWT, getGoalsController);
 router.route("/goals").post(verifyJWT, createGoalController);
 router.route("/goals").put(verifyJWT, updateGoalController);
 router.route("/goals").delete(verifyJWT, deleteGoalController);
+
+router.route("/daily-progress").get(verifyJWT, getDailyProgressStats);
 
 export default router;
