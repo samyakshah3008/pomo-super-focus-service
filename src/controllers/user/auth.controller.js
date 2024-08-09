@@ -40,6 +40,7 @@ const verifyOTPAndRegisterUserController = asyncHandler(
     try {
       const { accessToken, refreshToken, registeredUser } =
         await verifyOTPAndRegisterUser(userDetails, otp);
+      const user = registeredUser;
 
       return res
         .status(201)
@@ -48,7 +49,7 @@ const verifyOTPAndRegisterUserController = asyncHandler(
         .json(
           new ApiResponse(
             200,
-            { accessToken, refreshToken },
+            { accessToken, refreshToken, user },
 
             "User registered successfully"
           )
@@ -65,6 +66,8 @@ const verifyOTPAndRegisterUserController = asyncHandler(
 const signupGuestController = asyncHandler(async (req, res) => {
   try {
     const { accessToken, refreshToken, registeredUser } = await signupGuest();
+    const user = registeredUser;
+
     return res
       .status(201)
       .cookie("accessToken", accessToken, cookieOptions)
@@ -72,7 +75,7 @@ const signupGuestController = asyncHandler(async (req, res) => {
       .json(
         new ApiResponse(
           200,
-          { accessToken, refreshToken },
+          { accessToken, refreshToken, user },
           "User registered successfully"
         )
       );
@@ -116,7 +119,7 @@ const verifyOTPAndSigninUserController = asyncHandler(
     try {
       const { accessToken, refreshToken, findRegisteredUserWithEmail } =
         await verifyOtpAndSigninUser(userDetails, otp);
-
+      const user = findRegisteredUserWithEmail;
       return res
         .status(200)
         .cookie("accessToken", accessToken, cookieOptions)
@@ -124,7 +127,7 @@ const verifyOTPAndSigninUserController = asyncHandler(
         .json(
           new ApiResponse(
             200,
-            { accessToken, refreshToken },
+            { accessToken, refreshToken, user },
             "User Signed in successfully"
           )
         );

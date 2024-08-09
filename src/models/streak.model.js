@@ -6,9 +6,9 @@ const streakSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    dailyGoal: {
+    dailyGoalInHours: {
       type: Number,
-      default: 1500,
+      default: 1,
     },
     lastUpdated: {
       type: Date,

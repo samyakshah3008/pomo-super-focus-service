@@ -60,7 +60,7 @@ const logDailyStreakService = async (userId, currentDate) => {
       (result) => result._id === "yesterday"
     ) || { sessions: 0, totalTime: 0 };
 
-    if (yesterdayData.totalTime >= streakDetails?.dailyGoal) {
+    if (yesterdayData.totalTime >= streakDetails?.dailyGoalInHours) {
       streakDetails.streakCount = streakDetails.streakCount + 1;
     } else {
       streakDetails.streakCount = 0;
@@ -97,7 +97,11 @@ const updateDailyGoalFocusMinutesService = async (userId, newFocusMinutes) => {
     return new ApiError(404, null, "Streak Obj for user not found.");
   }
 
-  streakDetails.dailyGoal = newFocusMinutes;
+  streakDetails.dailyGoalInHours = newFocusMinutes / 60;
+
+  const convertMinutesToHours = (minutes) => {
+    return minutes / 60;
+  };
 
   await streakDetails.save();
 
