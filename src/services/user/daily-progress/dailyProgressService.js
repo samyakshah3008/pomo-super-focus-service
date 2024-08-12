@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
 import { Pomodoros } from "../../../models/pomodoro.model.js";
-import { ApiError } from "../../../utils/apiError.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { getYesterdayDateRange } from "../../../utils/helper-functions.js";
 
 const getDailyProgressStatsService = async (userId) => {
-  if (!userId) {
-    return new ApiError(400, null, "User ID is required.");
-  }
   const { startOfYesterday, endOfYesterday } = getYesterdayDateRange();
 
   const results = await Pomodoros.aggregate([

@@ -2,8 +2,14 @@ import { getDailyProgressStatsService } from "../../services/user/daily-progress
 import { ApiError } from "../../utils/apiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
-const getDailyProgressStats = asyncHandler(async (req, res) => {
+const getDailyProgressStatsController = asyncHandler(async (req, res) => {
   const { userId } = req.query;
+
+  if (!userId) {
+    return res
+      .status(400)
+      .json(new ApiError(400, { error: "user id is required. " }));
+  }
 
   try {
     const response = await getDailyProgressStatsService(userId);
@@ -24,4 +30,4 @@ const getDailyProgressStats = asyncHandler(async (req, res) => {
   }
 });
 
-export { getDailyProgressStats };
+export { getDailyProgressStatsController };
