@@ -44,7 +44,7 @@ const pausePomodoroService = async (userId, timeLeftInSeconds) => {
   });
 
   if (!activePomodoro) {
-    return new ApiError(404, { message: "Session is already paused." });
+    return new ApiError(400, { message: "Session is already paused." });
   }
 
   const currentTime = new Date();
@@ -66,7 +66,7 @@ const resumePomodoroService = async (userId) => {
     isPaused: true,
   });
   if (!activePomodoro) {
-    return new ApiError(404, { message: "Session is already running. " });
+    return new ApiError(400, { message: "Session is already running. " });
   }
 
   activePomodoro.isPaused = false;
