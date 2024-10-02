@@ -26,6 +26,8 @@ const signupUser = async (userDetails) => {
     });
   }
 
+  await OTP.find({ email }).deleteMany();
+
   const otp = generateOTP();
   const otpPayload = { email, otp };
 

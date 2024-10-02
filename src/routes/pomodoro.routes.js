@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   deleteActivePomodoro,
+  getActivePomodoro,
   initializePomodoro,
   pauseOrResumePomodoro,
 } from "../controllers/pomodoros/activePomodoro.controller.js";
@@ -12,6 +13,7 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.route("/active-pomodoro").get(verifyJWT, getActivePomodoro);
 router.route("/active-pomodoro").post(verifyJWT, initializePomodoro);
 router.route("/active-pomodoro").patch(verifyJWT, pauseOrResumePomodoro);
 router.route("/active-pomodoro").delete(verifyJWT, deleteActivePomodoro);

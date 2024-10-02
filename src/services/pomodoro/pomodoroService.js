@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ActivePomodoros } from "../../models/active-pomodoro.model.js";
 import { Pomodoros } from "../../models/pomodoro.model.js";
 import { ApiError } from "../../utils/apiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
@@ -33,7 +34,13 @@ const logPomodoroSessionService = async (userId, sessionTime) => {
 
   await pomodoroSession.save();
 
-  return new ApiResponse(200, { pomodoroSession }, "Successful operation");
+  await ActivePomodoros.findOneAndDelete({ userId });
+
+  return new ApiResponse(
+    200,
+    { pomodoroSession },
+    "Successfully saved completed pomodoro to DB."
+  );
 };
 
 const getPomodoroReportService = async (userId, startDate, endDate) => {
