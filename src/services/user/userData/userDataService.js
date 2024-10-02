@@ -14,4 +14,22 @@ const getUserDetailsService = async (userId) => {
   });
 };
 
-export { getUserDetailsService };
+const updateUserDetailsService = async (userId, isGreetingModalShown) => {
+  const findUser = await User.findById(userId);
+
+  if (!findUser) {
+    return new ApiError(404, { error: "User not found" }, "User not found");
+  }
+
+  findUser.isGreetingModalShown = isGreetingModalShown;
+
+  await findUser.save();
+
+  return new ApiResponse(
+    200,
+    { currentUser: findUser },
+    "User updated successfully"
+  );
+};
+
+export { getUserDetailsService, updateUserDetailsService };

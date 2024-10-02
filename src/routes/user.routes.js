@@ -15,7 +15,10 @@ import {
   verifyOTPAndSigninUserController,
 } from "../controllers/user/auth.controller.js";
 import { getDailyProgressStatsController } from "../controllers/user/daily-progress.controller.js";
-import { getUserDetailsController } from "../controllers/user/user.controller.js";
+import {
+  getUserDetailsController,
+  updateUserDetailsController,
+} from "../controllers/user/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
@@ -28,6 +31,7 @@ router.route("/signin/verify-otp").post(verifyOTPAndSigninUserController);
 
 // secured routes
 router.route("/").get(verifyJWT, getUserDetailsController);
+router.route("/").post(verifyJWT, updateUserDetailsController);
 
 router.route("/logout").post(verifyJWT, logoutUserController);
 router.route("/refresh-access-token").post(refreshAccessTokenController);
