@@ -16,6 +16,7 @@ import {
 } from "../controllers/user/auth.controller.js";
 import { getDailyProgressStatsController } from "../controllers/user/daily-progress.controller.js";
 import {
+  activateWorkingFrameworkController,
   getUserDetailsController,
   updateUserDetailsController,
 } from "../controllers/user/user.controller.js";
@@ -42,5 +43,8 @@ router.route("/goals").put(verifyJWT, updateGoalController);
 router.route("/goals").delete(verifyJWT, deleteGoalController);
 
 router.route("/daily-progress").get(verifyJWT, getDailyProgressStatsController);
+router
+  .route("/activate-working-framework")
+  .post(verifyJWT, activateWorkingFrameworkController);
 
 export default router;
