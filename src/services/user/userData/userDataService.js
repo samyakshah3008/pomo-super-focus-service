@@ -32,4 +32,27 @@ const updateUserDetailsService = async (userId, isGreetingModalShown) => {
   );
 };
 
-export { getUserDetailsService, updateUserDetailsService };
+const activateWorkingFrameworkService = async (userId, workingFramework) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return new ApiError(404, { error: "User not found" }, "User not found");
+  }
+
+  user.isWorkingFrameworkActivated = true;
+  user.workingFramework = workingFramework;
+
+  await user.save();
+
+  return new ApiResponse(
+    200,
+    { currentUser: user },
+    "Working framework activated successfully."
+  );
+};
+
+export {
+  activateWorkingFrameworkService,
+  getUserDetailsService,
+  updateUserDetailsService,
+};
