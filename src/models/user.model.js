@@ -78,6 +78,13 @@ const userSchema = new Schema(
       type: Number,
       default: 1,
     },
+    isWorkingFrameworkActivated: {
+      type: Boolean,
+      default: false,
+    },
+    workingFramework: {
+      type: Object,
+    },
   },
   { timestamps: true }
 );
