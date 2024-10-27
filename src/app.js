@@ -1,7 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import cron from "node-cron";
 
 const app = express();
 
@@ -11,7 +10,9 @@ app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
 app.use(cookieParser());
 
+import bucketListRouter from "./routes/bucket-list.routes.js";
 import customWorkingFrameworkRouter from "./routes/custom-working-framework.routes.js";
+import gratitudeRouter from "./routes/gratitude.routes.js";
 import habitsRouter from "./routes/habits.routes.js";
 import leaderboardRouter from "./routes/leaderboard.routes.js";
 import pomodoroRouter from "./routes/pomodoro.routes.js";
@@ -20,7 +21,7 @@ import todoRouter from "./routes/todo.routes.js";
 import userRouter from "./routes/user.routes.js";
 import workingFrameworkRouter from "./routes/working-framework.routes.js";
 
-import { sendHabitReminders } from "./utils/cronJobs.js";
+// import { sendHabitReminders } from "./utils/cronJobs.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/todos", todoRouter);
@@ -30,7 +31,9 @@ app.use("/api/v1/leaderboard", leaderboardRouter);
 app.use("/api/v1/working-framework", workingFrameworkRouter);
 app.use("/api/v1/custom-working-framework", customWorkingFrameworkRouter);
 app.use("/api/v1/habits", habitsRouter);
+app.use("/api/v1/gratitude", gratitudeRouter);
+app.use("/api/v1/bucket-list", bucketListRouter);
 
-cron.schedule("* * * * *", sendHabitReminders);
+// cron.schedule("* * * * *", sendHabitReminders);
 
 export default app;
