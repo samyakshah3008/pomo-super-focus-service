@@ -51,8 +51,25 @@ const activateWorkingFrameworkService = async (userId, workingFramework) => {
   );
 };
 
+const updateUserLifeSpanService = async (user, birthDate, estimateLifeSpan) => {
+  user.estimateLifeSpan = estimateLifeSpan;
+  user.birthDate = birthDate;
+
+  if (!user.isMyLifeOnboardingComplete) {
+    user.isMyLifeOnboardingComplete = true;
+  }
+  await user.save();
+
+  return new ApiResponse(
+    200,
+    { message: "My life user details saved successfully" },
+    "My life user details saved successfully"
+  );
+};
+
 export {
   activateWorkingFrameworkService,
   getUserDetailsService,
   updateUserDetailsService,
+  updateUserLifeSpanService,
 };
