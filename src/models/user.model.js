@@ -85,6 +85,16 @@ const userSchema = new Schema(
     workingFramework: {
       type: Object,
     },
+    birthDate: {
+      type: String,
+    },
+    estimateLifeSpan: {
+      type: Number,
+    },
+    isMyLifeOnboardingComplete: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

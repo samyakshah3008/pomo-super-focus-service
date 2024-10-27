@@ -2,6 +2,7 @@ import {
   activateWorkingFrameworkService,
   getUserDetailsService,
   updateUserDetailsService,
+  updateUserLifeSpanService,
 } from "../../services/user/userData/userDataService.js";
 import { ApiError } from "../../utils/apiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -115,8 +116,47 @@ const activateWorkingFrameworkController = asyncHandler(async (req, res) => {
   }
 });
 
+const updateUserLifeSpanController = asyncHandler(async (req, res) => {
+  const { birthDate, estimateLifeSpan } = req.body;
+  if (!birthDate || !estimateLifeSpan) {
+    return res.status(400).json(
+      new ApiError(
+        400,
+        {
+          error:
+            "Missing fields, both user birthdate and estimate life span is required. ",
+        },
+        "Missing fields, both user birthdate and estimate life span is required. "
+      )
+    );
+  }
+
+  try {
+    const response = await updateUserLifeSpanService(
+      req?.user,
+      birthDate,
+      estimateLifeSpan
+    );
+    return res.status(200).json(response);
+  } catch {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "Failed to update user life span details. "
+        )
+      );
+  }
+});
+
 export {
   activateWorkingFrameworkController,
   getUserDetailsController,
   updateUserDetailsController,
+  updateUserLifeSpanController,
 };

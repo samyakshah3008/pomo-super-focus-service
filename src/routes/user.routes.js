@@ -19,6 +19,7 @@ import {
   activateWorkingFrameworkController,
   getUserDetailsController,
   updateUserDetailsController,
+  updateUserLifeSpanController,
 } from "../controllers/user/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -46,5 +47,7 @@ router.route("/daily-progress").get(verifyJWT, getDailyProgressStatsController);
 router
   .route("/activate-working-framework")
   .post(verifyJWT, activateWorkingFrameworkController);
+
+router.route("/my-life").post(verifyJWT, updateUserLifeSpanController);
 
 export default router;
