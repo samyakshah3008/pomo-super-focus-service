@@ -1,28 +1,45 @@
 import { Schema, model } from "mongoose";
 
-const goalSchema = new Schema(
+const goalItemSchema = new Schema(
   {
-    userId: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     title: {
       type: String,
       required: [true, "Title is required"],
       trim: true,
     },
-    description: {
+    doAbleActions: {
       type: String,
       trim: true,
       default: "",
+      required: true,
     },
-    completed: {
+    category: {
+      type: String,
+      required: true,
+    },
+    estimatedTimeToComplete: {
+      type: String,
+      required: true,
+    },
+    status: {
       type: Boolean,
-      default: false,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-export const Goal = model("Goal", goalSchema);
+const goalListSchema = new Schema(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
+    goalItems: [goalItemSchema],
+  },
+  { timestamps: true }
+);
+
+export const GoalList = model("GoalList", goalListSchema);

@@ -1,77 +1,138 @@
 import {
-  createGoal,
-  deleteGoal,
-  getGoals,
-  updateGoal,
+  addItemToGoalListOfUserService,
+  deleteParticularItemFromGoalListOfUserService,
+  getGoalListItemsOfUserService,
+  updateParticularItemFromGoalListOfUserService,
 } from "../../services/goals/goalsService.js";
 import { ApiError } from "../../utils/apiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
-// get all goals of a particular user
-
-const getGoalsController = asyncHandler(async (req, res) => {
-  const { userId } = req.query;
-
+const getGoalListItemsOfUser = asyncHandler(async (req, res) => {
+  const user = req?.user;
   try {
-    const response = await getGoals(userId);
+    const response = await getGoalListItemsOfUserService(user);
     return res.status(200).json(response);
   } catch (error) {
-    throw new ApiError(
-      500,
-      error,
-      "Something went wrong while retrieving goals"
-    );
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "something went wrong fetching get goal list items of user"
+        )
+      );
   }
 });
 
-// create a new goal
+const addItemToGoalListOfUser = asyncHandler(async (req, res) => {
+  const { goalItem } = req.body;
+  const user = req?.user;
+  const { title, doAbleActions, category, estimatedTimeToComplete, status } =
+    goalItem;
 
-const createGoalController = asyncHandler(async (req, res) => {
-  const { userId, goalDetails } = req.body;
-  try {
-    const response = await createGoal(userId, goalDetails);
-
-    return res.status(201).json(response);
-  } catch (error) {
-    console.log(error);
-    throw new ApiError(
-      500,
-      error,
-      "Something went wrong while creating a new goal"
-    );
+  if (
+    !title?.length ||
+    !doAbleActions?.length ||
+    !category?.length ||
+    !estimatedTimeToComplete?.length
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
-});
-
-const updateGoalController = asyncHandler(async (req, res) => {
-  const { userId, goalDetails } = req.body;
 
   try {
-    const response = await updateGoal(userId, goalDetails);
-
-    return res.status(200).json(response);
-  } catch (e) {
-    throw new ApiError(500, "Something went wrong while updating goal");
-  }
-});
-
-const deleteGoalController = asyncHandler(async (req, res) => {
-  const { goalId } = req.query;
-
-  try {
-    const response = await deleteGoal(goalId);
+    const response = await addItemToGoalListOfUserService(user, goalItem);
     return res.status(200).json(response);
   } catch (error) {
-    throw new ApiError(
-      500,
-      error,
-      "Something went wrong while deleting the goal"
-    );
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "something went wrong adding item to goal list"
+        )
+      );
   }
 });
+
+const updateParticularItemFromGoalListOfUser = asyncHandler(
+  async (req, res) => {
+    const { goalItem, goalId } = req.body;
+    const user = req?.user;
+    const { title, doAbleActions, category, estimatedTimeToComplete, status } =
+      goalItem;
+
+    if (
+      !title?.length ||
+      !doAbleActions?.length ||
+      !category?.length ||
+      !estimatedTimeToComplete?.length
+    ) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+      const response = await updateParticularItemFromGoalListOfUserService(
+        user,
+        goalItem,
+        goalId
+      );
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return res.status(error.statusCode).json(error);
+      }
+      return res
+        .status(500)
+        .json(
+          new ApiError(
+            500,
+            { message: error?.message },
+            "something went wrong updating item to goal list"
+          )
+        );
+    }
+  }
+);
+
+const deleteParticularItemFromGoalListOfUser = asyncHandler(
+  async (req, res) => {
+    const { goalId } = req.query;
+    const user = req?.user;
+
+    try {
+      const response = await deleteParticularItemFromGoalListOfUserService(
+        user,
+        goalId
+      );
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return res.status(error.statusCode).json(error);
+      }
+      return res
+        .status(500)
+        .json(
+          new ApiError(
+            500,
+            { message: error?.message },
+            "something went wrong updating item to goal list"
+          )
+        );
+    }
+  }
+);
 
 export {
-  createGoalController,
-  deleteGoalController,
-  getGoalsController,
-  updateGoalController,
+  addItemToGoalListOfUser,
+  deleteParticularItemFromGoalListOfUser,
+  getGoalListItemsOfUser,
+  updateParticularItemFromGoalListOfUser,
 };
