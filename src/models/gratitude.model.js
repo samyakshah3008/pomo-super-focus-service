@@ -1,35 +1,27 @@
 import { Schema, model } from "mongoose";
 
-const goalItemSchema = new Schema(
+const gratitudeItemSchema = new Schema(
   {
     title: {
       type: String,
       required: [true, "Title is required"],
       trim: true,
     },
-    doAbleActions: {
+    description: {
       type: String,
       trim: true,
       default: "",
       required: true,
     },
-    category: {
+    dateOfCreation: {
       type: String,
-      required: true,
-    },
-    estimatedTimeToComplete: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: Boolean,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const goalListSchema = new Schema(
+const gratitudeListSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -37,9 +29,9 @@ const goalListSchema = new Schema(
       required: true,
       unique: true,
     },
-    goalItems: [goalItemSchema],
+    gratitudeItems: [gratitudeItemSchema],
   },
   { timestamps: true }
 );
 
-export const GoalList = model("GoalList", goalListSchema);
+export const GratitudeList = model("GratitudeList", gratitudeListSchema);

@@ -12,6 +12,7 @@ app.use(cookieParser());
 
 import bucketListRouter from "./routes/bucket-list.routes.js";
 import customWorkingFrameworkRouter from "./routes/custom-working-framework.routes.js";
+import goalsRouter from "./routes/goal.routes.js";
 import gratitudeRouter from "./routes/gratitude.routes.js";
 import habitsRouter from "./routes/habits.routes.js";
 import leaderboardRouter from "./routes/leaderboard.routes.js";
@@ -33,6 +34,7 @@ app.use("/api/v1/custom-working-framework", customWorkingFrameworkRouter);
 app.use("/api/v1/habits", habitsRouter);
 app.use("/api/v1/gratitude", gratitudeRouter);
 app.use("/api/v1/bucket-list", bucketListRouter);
+app.use("/api/v1/goals", goalsRouter);
 
 // cron.schedule("* * * * *", sendHabitReminders);
 

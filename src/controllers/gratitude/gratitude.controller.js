@@ -1,16 +1,16 @@
 import {
-  addItemToGoalListOfUserService,
-  deleteParticularItemFromGoalListOfUserService,
-  getGoalListItemsOfUserService,
-  updateParticularItemFromGoalListOfUserService,
-} from "../../services/goals/goalsService.js";
+  addItemToGratitudeListOfUserService,
+  deleteParticularItemFromGratitudeListOfUserService,
+  getGratitudeListItemsOfUserService,
+  updateParticularItemFromGratitudeListOfUserService,
+} from "../../services/gratitude/gratitudeService.js";
 import { ApiError } from "../../utils/apiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
-const getGoalListItemsOfUser = asyncHandler(async (req, res) => {
+const getGratitudeListItemsOfUser = asyncHandler(async (req, res) => {
   const user = req?.user;
   try {
-    const response = await getGoalListItemsOfUserService(user);
+    const response = await getGratitudeListItemsOfUserService(user);
     return res.status(200).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -22,29 +22,26 @@ const getGoalListItemsOfUser = asyncHandler(async (req, res) => {
         new ApiError(
           500,
           { message: error?.message },
-          "something went wrong fetching get goal list items of user"
+          "something went wrong fetching get gratitude list items of user"
         )
       );
   }
 });
 
-const addItemToGoalListOfUser = asyncHandler(async (req, res) => {
-  const { goalItem } = req.body;
+const addItemToGratitudeListOfUser = asyncHandler(async (req, res) => {
+  const { gratitudeItem } = req.body;
   const user = req?.user;
-  const { title, doAbleActions, category, estimatedTimeToComplete, status } =
-    goalItem;
+  const { title, description } = gratitudeItem;
 
-  if (
-    !title?.length ||
-    !doAbleActions?.length ||
-    !category?.length ||
-    !estimatedTimeToComplete?.length
-  ) {
+  if (!title?.length || !description?.length) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const response = await addItemToGoalListOfUserService(user, goalItem);
+    const response = await addItemToGratitudeListOfUserService(
+      user,
+      gratitudeItem
+    );
     return res.status(200).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -56,33 +53,27 @@ const addItemToGoalListOfUser = asyncHandler(async (req, res) => {
         new ApiError(
           500,
           { message: error?.message },
-          "something went wrong adding item to goal list"
+          "something went wrong adding item to gratitude list"
         )
       );
   }
 });
 
-const updateParticularItemFromGoalListOfUser = asyncHandler(
+const updateParticularItemFromGratitudeListOfUser = asyncHandler(
   async (req, res) => {
-    const { goalItem, goalId } = req.body;
+    const { gratitudeItem, gratitudeId } = req.body;
     const user = req?.user;
-    const { title, doAbleActions, category, estimatedTimeToComplete, status } =
-      goalItem;
+    const { title, description } = gratitudeItem;
 
-    if (
-      !title?.length ||
-      !doAbleActions?.length ||
-      !category?.length ||
-      !estimatedTimeToComplete?.length
-    ) {
+    if (!gratitudeId?.length || !title?.length || !description?.length) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
     try {
-      const response = await updateParticularItemFromGoalListOfUserService(
+      const response = await updateParticularItemFromGratitudeListOfUserService(
         user,
-        goalItem,
-        goalId
+        gratitudeItem,
+        gratitudeId
       );
       return res.status(200).json(response);
     } catch (error) {
@@ -95,22 +86,22 @@ const updateParticularItemFromGoalListOfUser = asyncHandler(
           new ApiError(
             500,
             { message: error?.message },
-            "something went wrong updating item to goal list"
+            "something went wrong updating item to gratitude list"
           )
         );
     }
   }
 );
 
-const deleteParticularItemFromGoalListOfUser = asyncHandler(
+const deleteParticularItemFromGratitudeListOfUser = asyncHandler(
   async (req, res) => {
-    const { goalId } = req.query;
+    const { gratitudeId } = req.query;
     const user = req?.user;
 
     try {
-      const response = await deleteParticularItemFromGoalListOfUserService(
+      const response = await deleteParticularItemFromGratitudeListOfUserService(
         user,
-        goalId
+        gratitudeId
       );
       return res.status(200).json(response);
     } catch (error) {
@@ -123,7 +114,7 @@ const deleteParticularItemFromGoalListOfUser = asyncHandler(
           new ApiError(
             500,
             { message: error?.message },
-            "something went wrong updating item to goal list"
+            "something went wrong updating item to gratitude list"
           )
         );
     }
@@ -131,8 +122,8 @@ const deleteParticularItemFromGoalListOfUser = asyncHandler(
 );
 
 export {
-  addItemToGoalListOfUser,
-  deleteParticularItemFromGoalListOfUser,
-  getGoalListItemsOfUser,
-  updateParticularItemFromGoalListOfUser,
+  addItemToGratitudeListOfUser,
+  deleteParticularItemFromGratitudeListOfUser,
+  getGratitudeListItemsOfUser,
+  updateParticularItemFromGratitudeListOfUser,
 };

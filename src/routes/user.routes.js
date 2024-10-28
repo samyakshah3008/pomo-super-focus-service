@@ -1,11 +1,5 @@
 import { Router } from "express";
 import {
-  createGoalController,
-  deleteGoalController,
-  getGoalsController,
-  updateGoalController,
-} from "../controllers/goals/goal.controller.js";
-import {
   logoutUserController,
   refreshAccessTokenController,
   signinUserController,
@@ -37,11 +31,6 @@ router.route("/").post(verifyJWT, updateUserDetailsController);
 
 router.route("/logout").post(verifyJWT, logoutUserController);
 router.route("/refresh-access-token").post(refreshAccessTokenController);
-
-router.route("/goals").get(verifyJWT, getGoalsController);
-router.route("/goals").post(verifyJWT, createGoalController);
-router.route("/goals").put(verifyJWT, updateGoalController);
-router.route("/goals").delete(verifyJWT, deleteGoalController);
 
 router.route("/daily-progress").get(verifyJWT, getDailyProgressStatsController);
 router

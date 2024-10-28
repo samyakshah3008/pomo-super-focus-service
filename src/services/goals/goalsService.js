@@ -1,83 +1,121 @@
-import { Goal } from "../../models/goal.model.js";
-import { User } from "../../models/user.model.js";
-import { ApiError } from "../../utils/apiError.js";
+import mongoose from "mongoose";
+import { GoalList } from "../../models/goal.model.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
+import { ApiError } from "../../utils/apiError.js";
 
-export const getGoals = async (userId) => {
-  if (!userId) {
-    throw new ApiError(400, "Please provide user ID");
-  }
-  const goalsList = await Goal.find({ userId });
+const getGoalListItemsOfUserService = async (user) => {
+  const userId = new mongoose.Types.ObjectId(user?._id);
 
-  return new ApiResponse(200, { goalsList });
+  const goalList = await GoalList.findOne({ userId });
+
+  return new ApiResponse(
+    200,
+    { goalItems: goalList?.goalItems || [] },
+    "Successfully fetched goal items"
+  );
 };
 
-export const createGoal = async (userId, goalDetails) => {
-  const { title, description = "", completed = false } = goalDetails;
+const addItemToGoalListOfUserService = async (user, goalItem) => {
+  const { title, doAbleActions, category, estimatedTimeToComplete, status } =
+    goalItem;
 
-  if (!userId) {
-    throw new ApiError(400, "Please provide user ID");
+  const newGoalItem = {
+    title,
+    doAbleActions,
+    category,
+    estimatedTimeToComplete,
+    status,
+  };
+
+  let goalList = await GoalList.findOne({ userId: user?._id });
+
+  if (!goalList) {
+    goalList = new GoalList({
+      userId: user?._id,
+      goalItems: [newGoalItem],
+    });
+  } else {
+    goalList.goalItems.push(newGoalItem);
   }
-  if (!title) {
-    throw new ApiError(400, "Please provide a title");
-  }
 
-  const user = await User.findById({ _id: userId });
+  await goalList.save();
 
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
-
-  const newGoal = new Goal({ userId, title, description, completed });
-
-  try {
-    await newGoal.save();
-    return new ApiResponse(201, {}, "Goal created successfully");
-  } catch (error) {
-    throw new ApiError(
-      500,
-      error,
-      "Something went wrong while creating a new goal"
-    );
-  }
+  return new ApiResponse(
+    201,
+    { message: "Successfully added item to goal list" },
+    "Successfully added item to goal list"
+  );
 };
 
-export const updateGoal = async (userId, goalDetails) => {
-  const { goalId, title, description, completed = false } = goalDetails;
+const updateParticularItemFromGoalListOfUserService = async (
+  user,
+  goalItem,
+  goalItemId
+) => {
+  const { title, doAbleActions, category, estimatedTimeToComplete, status } =
+    goalItem;
 
-  if (!userId) {
-    throw new ApiError(400, "Please provide user ID");
-  }
-  if (!goalId) {
-    throw new ApiError(400, "Please provide goal ID");
-  }
-  if (!title) {
-    throw new ApiError(400, "Please provide a title");
-  }
-  if (!description) {
-    throw new ApiError(400, "Description is required");
-  }
+  const goalList = await GoalList.findOne({ userId: user?._id });
 
-  const user = await User.findById(userId);
-  if (!user) {
-    throw new ApiError(404, "User not found");
+  if (!goalList) {
+    throw new ApiError(404, {
+      message: "Goal list is empty for this user.",
+    });
   }
 
-  const updatedGoal = { userId, title, description, completed };
+  const particularGoalItem = goalList.goalItems.id(goalItemId);
 
-  await Goal.findByIdAndUpdate(goalId, updatedGoal, {
-    new: true,
-    runValidators: true,
-  });
+  if (!particularGoalItem) {
+    throw new ApiError(404, { message: "Goal item not found!" });
+  }
 
-  return new ApiResponse(200, {}, "Goal updated successfully");
+  if (title !== undefined) particularGoalItem.title = title;
+  if (doAbleActions !== undefined)
+    particularGoalItem.doAbleActions = doAbleActions;
+  if (estimatedTimeToComplete !== undefined)
+    particularGoalItem.estimatedTimeToComplete = estimatedTimeToComplete;
+  if (category !== undefined) particularGoalItem.category = category;
+  if (status !== undefined) particularGoalItem.status = status;
+  await goalList.save();
+
+  return new ApiResponse(
+    200,
+    { message: "Successfully updated item in goal list" },
+    "Successfully updated item in goal list"
+  );
 };
 
-export const deleteGoal = async (goalId) => {
-  if (!goalId) {
-    throw new ApiError(400, "Goal ID is required");
+const deleteParticularItemFromGoalListOfUserService = async (
+  user,
+  goalItemId
+) => {
+  const goalList = await GoalList.findOne({ userId: user?._id });
+
+  if (!goalList) {
+    throw new ApiError(404, {
+      message: "Goal list is empty for this user.",
+    });
   }
 
-  await Goal.findByIdAndDelete(goalId);
-  return new ApiResponse(200, "Goal deleted successfully");
+  const particularGoalItem = goalList.goalItems.id(goalItemId);
+
+  if (!particularGoalItem) {
+    throw new ApiError(404, { message: "Goal item not found!" });
+  }
+
+  await particularGoalItem.deleteOne();
+  await goalList.save();
+
+  return new ApiResponse(
+    200,
+    { message: "Successfully deleted item in goal list" },
+    "Successfully deleted item in goal list"
+  );
+};
+
+export {
+  addItemToGoalListOfUserService,
+  deleteParticularItemFromGoalListOfUserService,
+  getGoalListItemsOfUserService,
+  updateParticularItemFromGoalListOfUserService,
 };
