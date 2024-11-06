@@ -11,8 +11,11 @@ import {
 import { getDailyProgressStatsController } from "../controllers/user/daily-progress.controller.js";
 import {
   activateWorkingFrameworkController,
+  confirmOTPAndUpdateUserEmailInformationController,
   getUserDetailsController,
+  updateUserBasicInformationController,
   updateUserDetailsController,
+  updateUserEmailInformationController,
   updateUserLifeSpanController,
 } from "../controllers/user/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -38,5 +41,15 @@ router
   .post(verifyJWT, activateWorkingFrameworkController);
 
 router.route("/my-life").post(verifyJWT, updateUserLifeSpanController);
+router
+  .route("/update-basic-information")
+  .post(verifyJWT, updateUserBasicInformationController);
+router
+  .route("/update-email")
+  .post(verifyJWT, updateUserEmailInformationController);
+
+router
+  .route("/update-email/verify")
+  .post(verifyJWT, confirmOTPAndUpdateUserEmailInformationController);
 
 export default router;
