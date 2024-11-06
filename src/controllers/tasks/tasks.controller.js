@@ -6,7 +6,7 @@ import {
   onChangeStatusService,
   updateParticularTaskFromTaskListOfUserService,
 } from "../../services/tasks/tasksService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getTasksOfUser = asyncHandler(async (req, res) => {

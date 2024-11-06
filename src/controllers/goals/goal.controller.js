@@ -4,7 +4,7 @@ import {
   getGoalListItemsOfUserService,
   updateParticularItemFromGoalListOfUserService,
 } from "../../services/goals/goalsService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getGoalListItemsOfUser = asyncHandler(async (req, res) => {

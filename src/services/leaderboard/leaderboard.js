@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import { Pomodoros } from "../../models/pomodoro.model.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { getWeekTimeline } from "../../utils/dateUtils.js";
 

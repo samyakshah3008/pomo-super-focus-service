@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Pomodoros } from "../../models/pomodoro.model.js";
 import { Streak } from "../../models/streak.model.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { getEOD, getYesterdayDateRange } from "../../utils/helper-functions.js";
 

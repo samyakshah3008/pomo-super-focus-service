@@ -2,7 +2,7 @@ import {
   getPomodoroReportService,
   logPomodoroSessionService,
 } from "../../services/pomodoro/pomodoroService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const logPomodoroSession = asyncHandler(async (req, res) => {

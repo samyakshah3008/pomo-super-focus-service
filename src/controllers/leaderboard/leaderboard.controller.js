@@ -2,7 +2,7 @@ import {
   getLeaderboardOfTheWeekService,
   getUserRankOfTheWeekService,
 } from "../../services/leaderboard/leaderboard.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getLeaderboardOfTheWeek = asyncHandler(async (req, res) => {

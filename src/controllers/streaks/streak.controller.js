@@ -2,7 +2,7 @@ import {
   logDailyStreakService,
   updateDailyGoalFocusMinutesService,
 } from "../../services/streaks/streaksService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const logDailyStreak = asyncHandler(async (req, res) => {
