@@ -6,7 +6,7 @@ import {
   markHabitCompleteService,
   updateHabitService,
 } from "../../services/habits/habitsService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 
 const createHabit = async (req, res) => {
   try {

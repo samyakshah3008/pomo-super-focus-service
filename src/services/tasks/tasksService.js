@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { TaskList } from "../../models/tasks.model.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/apiError.js";
 
 const getTasksOfUserService = async (user) => {
   const userId = new mongoose.Types.ObjectId(user?._id);

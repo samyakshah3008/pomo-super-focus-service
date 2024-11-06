@@ -4,7 +4,7 @@ import {
   getBucketListItemsOfUserService,
   updateParticularItemFromBucketListOfUserService,
 } from "../../services/bucketList/bucketListService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getBucketListItemsOfUser = asyncHandler(async (req, res) => {

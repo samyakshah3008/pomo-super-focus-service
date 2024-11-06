@@ -7,7 +7,7 @@ import {
   updateUserEmailInformationService,
   updateUserLifeSpanService,
 } from "../../services/user/userData/userDataService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getUserDetailsController = asyncHandler(async (req, res) => {

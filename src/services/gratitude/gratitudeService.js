@@ -1,8 +1,8 @@
 import moment from "moment";
 import mongoose from "mongoose";
 import { GratitudeList } from "../../models/gratitude.model.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/apiError.js";
 
 const getGratitudeListItemsOfUserService = async (user) => {
   const userId = new mongoose.Types.ObjectId(user?._id);

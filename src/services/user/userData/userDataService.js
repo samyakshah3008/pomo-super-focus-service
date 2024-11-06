@@ -1,7 +1,7 @@
 import { generateOTP } from "../../../constants.js";
 import { OTP } from "../../../models/otp.model.js";
 import { User } from "../../../models/user.model.js";
-import { ApiError } from "../../../utils/apiError.js";
+import { ApiError } from "../../../utils/ApiError.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 
 const getUserDetailsService = async (userId) => {

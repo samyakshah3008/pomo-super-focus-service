@@ -1,7 +1,7 @@
 import { CustomWorkingFramework } from "../../models/custom-working-framework.model.js";
 import { User } from "../../models/user.model.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/apiError.js";
 
 const getCustomWorkingFrameworkTemplateService = async (userId) => {
   const user = await User.findById(userId);

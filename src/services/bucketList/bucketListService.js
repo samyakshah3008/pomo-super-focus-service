@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { BucketList } from "../../models/bucket-list.model.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
-import { ApiError } from "../../utils/apiError.js";
 
 const getBucketListItemsOfUserService = async (user) => {
   const userId = new mongoose.Types.ObjectId(user?._id);

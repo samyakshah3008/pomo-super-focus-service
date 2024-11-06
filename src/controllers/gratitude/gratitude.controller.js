@@ -4,7 +4,7 @@ import {
   getGratitudeListItemsOfUserService,
   updateParticularItemFromGratitudeListOfUserService,
 } from "../../services/gratitude/gratitudeService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getGratitudeListItemsOfUser = asyncHandler(async (req, res) => {

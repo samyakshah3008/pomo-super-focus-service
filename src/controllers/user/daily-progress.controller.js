@@ -1,5 +1,5 @@
 import { getDailyProgressStatsService } from "../../services/user/daily-progress/dailyProgressService.js";
-import { ApiError } from "../../utils/apiError.js";
+import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getDailyProgressStatsController = asyncHandler(async (req, res) => {
