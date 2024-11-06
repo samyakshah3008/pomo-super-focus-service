@@ -1,7 +1,10 @@
 import {
   activateWorkingFrameworkService,
+  confirmOTPAndUpdateUserEmailInformationService,
   getUserDetailsService,
+  updateUserBasicInformationService,
   updateUserDetailsService,
+  updateUserEmailInformationService,
   updateUserLifeSpanService,
 } from "../../services/user/userData/userDataService.js";
 import { ApiError } from "../../utils/apiError.js";
@@ -138,7 +141,7 @@ const updateUserLifeSpanController = asyncHandler(async (req, res) => {
       estimateLifeSpan
     );
     return res.status(200).json(response);
-  } catch {
+  } catch (error) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
     }
@@ -154,9 +157,125 @@ const updateUserLifeSpanController = asyncHandler(async (req, res) => {
   }
 });
 
+const updateUserBasicInformationController = asyncHandler(async (req, res) => {
+  const { firstName, lastName } = req.body;
+
+  if (!firstName?.length) {
+    return res.status(400).json(
+      new ApiError(
+        400,
+        {
+          error: "Missing fields, first name is required. ",
+        },
+        "Missing fields, first name is required. "
+      )
+    );
+  }
+
+  try {
+    const response = await updateUserBasicInformationService(
+      req?.user,
+      firstName,
+      lastName
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "Failed to update user basic information details. "
+        )
+      );
+  }
+});
+
+const updateUserEmailInformationController = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email?.length) {
+    return res.status(400).json(
+      new ApiError(
+        400,
+        {
+          error: "Missing fields, email is required. ",
+        },
+        "Missing fields, email is required. "
+      )
+    );
+  }
+
+  try {
+    const response = await updateUserEmailInformationService(email);
+    return res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "Failed to update user email details. "
+        )
+      );
+  }
+});
+
+const confirmOTPAndUpdateUserEmailInformationController = asyncHandler(
+  async (req, res) => {
+    const { email, otp } = req.body;
+    const user = req?.user;
+
+    if (!email?.length || !otp?.length) {
+      return res.status(400).json(
+        new ApiError(
+          400,
+          {
+            error: "Missing fields, email and otp is required. ",
+          },
+          "Missing fields, email and otp is required. "
+        )
+      );
+    }
+
+    try {
+      const response = await confirmOTPAndUpdateUserEmailInformationService(
+        user,
+        email,
+        otp
+      );
+      return res.status(200).json(response);
+    } catch (error) {
+      if (error instanceof ApiError) {
+        return res.status(error.statusCode).json(error);
+      }
+      return res
+        .status(500)
+        .json(
+          new ApiError(
+            500,
+            { message: error?.message },
+            "Failed to update user email details. "
+          )
+        );
+    }
+  }
+);
+
 export {
   activateWorkingFrameworkController,
+  confirmOTPAndUpdateUserEmailInformationController,
   getUserDetailsController,
+  updateUserBasicInformationController,
   updateUserDetailsController,
+  updateUserEmailInformationController,
   updateUserLifeSpanController,
 };
