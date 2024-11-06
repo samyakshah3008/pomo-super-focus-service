@@ -18,6 +18,7 @@ import habitsRouter from "./routes/habits.routes.js";
 import leaderboardRouter from "./routes/leaderboard.routes.js";
 import pomodoroRouter from "./routes/pomodoro.routes.js";
 import streakRouter from "./routes/streak.routes.js";
+import tasksRouter from "./routes/tasks.routes.js";
 import todoRouter from "./routes/todo.routes.js";
 import userRouter from "./routes/user.routes.js";
 import workingFrameworkRouter from "./routes/working-framework.routes.js";
@@ -35,6 +36,7 @@ app.use("/api/v1/habits", habitsRouter);
 app.use("/api/v1/gratitude", gratitudeRouter);
 app.use("/api/v1/bucket-list", bucketListRouter);
 app.use("/api/v1/goals", goalsRouter);
+app.use("/api/v1/tasks", tasksRouter);
 
 // cron.schedule("* * * * *", sendHabitReminders);
 
