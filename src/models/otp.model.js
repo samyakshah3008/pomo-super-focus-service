@@ -22,13 +22,12 @@ const otpSchema = new Schema(
 
 async function sendVerificationEmail(email, otp) {
   try {
-    const emailResponse = await mailSender(
+    await mailSender(
       email,
       "Verification Email",
       `<h1>Please confirm your OTP</h1>
         <p>Here is your OTP code: ${otp}</p>`
     );
-    console.log("Email sent successfully: ", emailResponse);
   } catch (err) {
     console.error("Error occurred while sending email: ", err);
   }

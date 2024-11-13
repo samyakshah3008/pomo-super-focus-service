@@ -71,7 +71,7 @@ const createNewTodo = asyncHandler(async (req, res) => {
       .status(200)
       .json(new ApiResponse(200, "Todo created successfully"));
   } catch (e) {
-    console.log(e);
+    console.log(e, "from creating todo ");
     throw new ApiError(500, "Something went wrong while creating a todo");
   }
 });
