@@ -8,10 +8,30 @@ const getSelfReviewListItemsOfUserService = async (user) => {
 
   const selfReviewList = await SelfReviewList.findOne({ userId });
 
+  if (!selfReviewList) {
+    return new ApiResponse(
+      200,
+      { selfReviewListItems: {} },
+      "No self review items found for this user."
+    );
+  }
+
+  const selfReviewItemsByYear = selfReviewList.selfReviewItems.reduce(
+    (acc, item) => {
+      const year = new Date(item.date).getFullYear();
+      if (!acc[year]) {
+        acc[year] = [];
+      }
+      acc[year].push(item);
+      return acc;
+    },
+    {}
+  );
+
   return new ApiResponse(
     200,
-    { selfReviewListItems: selfReviewList?.selfReviewItems || [] },
-    "Successfully fetched self review items"
+    { selfReviewListItems: selfReviewItemsByYear },
+    "Successfully fetched self review items, organized by year"
   );
 };
 
@@ -26,7 +46,7 @@ const addItemToSelfReviewListOfUserService = async (user, selfReviewItem) => {
 
   let selfReviewItemsList = await SelfReviewList.findOne({ userId: user?._id });
 
-  if (!selfReviewItemsList?.length) {
+  if (!selfReviewItemsList) {
     selfReviewItemsList = new SelfReviewList({
       userId: user?._id,
       selfReviewItems: [newSelfReviewItem],
@@ -43,7 +63,6 @@ const addItemToSelfReviewListOfUserService = async (user, selfReviewItem) => {
     "Successfully added item to self review list"
   );
 };
-
 const updateParticularItemFromSelfReviewListOfUserService = async (
   user,
   selfReviewItem,
@@ -55,7 +74,7 @@ const updateParticularItemFromSelfReviewListOfUserService = async (
     userId: user?._id,
   });
 
-  if (!selfReviewItemList?.length) {
+  if (!selfReviewItemList) {
     throw new ApiError(404, {
       message: "Self Review list is empty for this user.",
     });
@@ -72,6 +91,7 @@ const updateParticularItemFromSelfReviewListOfUserService = async (
   if (description !== undefined)
     particularSelfReviewItem.description = description;
   if (date !== undefined) particularSelfReviewItem.date = date;
+
   await selfReviewItemList.save();
 
   return new ApiResponse(
