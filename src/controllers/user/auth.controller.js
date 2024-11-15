@@ -80,7 +80,7 @@ const signupGuestController = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error);
+    console.log(error, "here from signup guest controller");
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
     }

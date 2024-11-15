@@ -13,6 +13,7 @@ import {
   activateWorkingFrameworkController,
   confirmOTPAndUpdateUserEmailInformationController,
   getUserDetailsController,
+  reportBugController,
   updateUserBasicInformationController,
   updateUserDetailsController,
   updateUserEmailInformationController,
@@ -51,5 +52,7 @@ router
 router
   .route("/update-email/verify")
   .post(verifyJWT, confirmOTPAndUpdateUserEmailInformationController);
+
+router.route("/report-bug").post(verifyJWT, reportBugController);
 
 export default router;

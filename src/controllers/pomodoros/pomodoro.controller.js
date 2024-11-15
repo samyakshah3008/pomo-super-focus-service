@@ -12,8 +12,7 @@ const logPomodoroSession = asyncHandler(async (req, res) => {
     const response = await logPomodoroSessionService(userId, sessionTime);
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error, "error");
-    console.log(error?.message, "mesg");
+    console.log(error, "error from log pomodoro session");
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
     }
