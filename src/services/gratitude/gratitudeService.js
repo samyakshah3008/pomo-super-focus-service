@@ -52,7 +52,6 @@ const updateParticularItemFromGratitudeListOfUserService = async (
   gratitudeItemId
 ) => {
   const { title, description } = gratitudeItem;
-
   const gratitudeList = await GratitudeList.findOne({ userId: user?._id });
 
   if (!gratitudeList) {
