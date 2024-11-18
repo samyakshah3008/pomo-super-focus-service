@@ -1,147 +1,148 @@
-import moment from "moment";
-import { Habit } from "../../models/habits.model.js";
+import { HabitList } from "../../models/habits.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
 const createHabitService = async (
   userId,
-  title,
+  defineHabitText,
+  getSpecificText,
+  identityText,
   repeat,
-  selectedDays,
-  dailyReminder,
-  reminderTime,
-  categories
+  selectedDays
 ) => {
-  const newHabit = new Habit({
-    userId,
-    title,
+  const newHabit = {
+    defineHabitText,
+    getSpecificText,
+    identityText,
     repeat,
     selectedDays,
-    dailyReminder,
-    reminderTime: dailyReminder ? reminderTime : null,
-    categories,
-  });
+  };
 
-  await newHabit.save();
+  let habitList = await HabitList.findOne({ userId });
 
-  return new ApiResponse(200, newHabit, "Successfully created new habit!");
-};
-
-const getTodaysHabitsService = async (
-  userId,
-  todayStart,
-  todayEnd,
-  currentDay
-) => {
-  const habits = await Habit.find({ userId });
-
-  const todaysHabits = habits.filter(
-    (habit) =>
-      habit.repeat === "daily" ||
-      (habit.repeat === "weekly" &&
-        habit.selectedDays.includes(currentDay.slice(0, 3)))
-  );
-
-  if (!todaysHabits.length) {
-    return new ApiResponse(
-      200,
-      { complete: [], incomplete: [] },
-      "Successfully fetched"
-    );
+  if (!habitList) {
+    habitList = new HabitList({
+      userId,
+      habitItems: [newHabit],
+    });
+  } else {
+    habitList.habitItems.push(newHabit);
   }
 
-  const completeHabits = [];
-  const incompleteHabits = [];
+  await habitList.save();
 
-  todaysHabits.forEach((habit) => {
-    const todayCompletion = habit.completionStatus?.find((status) =>
-      moment(status.date).isBetween(todayStart, todayEnd, null, "[]")
-    );
-
-    if (todayCompletion && todayCompletion.isComplete) {
-      completeHabits.push(habit);
-    } else {
-      incompleteHabits.push(habit);
-    }
-  });
-
-  return new ApiResponse(
-    200,
-    { complete: completeHabits, incomplete: incompleteHabits },
-    "Successfully fetched"
-  );
+  return new ApiResponse(201, newHabit, "Successfully created new habit!");
 };
 
 const updateHabitService = async (
-  habitId,
   userId,
-  title,
+  defineHabitText,
+  getSpecificText,
+  identityText,
   repeat,
   selectedDays,
-  dailyReminder,
-  reminderTime,
-  categories
+  habitId
 ) => {
-  const habit = await Habit.findByIdAndUpdate(
-    habitId,
-    {
-      userId,
-      title,
-      repeat,
-      selectedDays,
-      dailyReminder,
-      reminderTime: dailyReminder ? reminderTime : null,
-      categories,
-    },
-    { new: true, runValidators: true }
-  );
+  const findUser = await HabitList.findOne({ userId });
+  if (!findUser) {
+    throw new ApiError(404, {
+      message: "Habit list is empty for this user.",
+    });
+  }
 
-  if (!habit) {
-    throw new ApiError(404, { message: "Habit not found" }, "Habit not found");
+  const particularHabitItem = findUser.habitItems.id(habitId);
+
+  if (!particularHabitItem) {
+    throw new ApiError(404, { message: "Habit item not found!" });
+  }
+
+  if (defineHabitText !== undefined)
+    particularHabitItem.defineHabitText = defineHabitText;
+  if (getSpecificText !== undefined)
+    particularHabitItem.getSpecificText = getSpecificText;
+  if (identityText !== undefined)
+    particularHabitItem.identityText = identityText;
+  if (repeat !== undefined) particularHabitItem.repeat = repeat;
+  if (selectedDays !== undefined)
+    particularHabitItem.selectedDays = selectedDays;
+
+  await findUser.save();
+
+  return new ApiResponse(
+    200,
+    { message: "Successfully updated item in habit list" },
+    "Successfully updated item in habit list"
+  );
+};
+
+const deleteParticularItemFromHabitListOfUserService = async (
+  user,
+  habitId
+) => {
+  const habitList = await HabitList.findOne({ userId: user?._id });
+
+  if (!habitList) {
+    throw new ApiError(404, {
+      message: "Habit list is empty for this user.",
+    });
+  }
+
+  const particularHabitItem = habitList.habitItems.id(habitId);
+
+  if (!particularHabitItem) {
+    throw new ApiError(404, { message: "Habit item not found!" });
+  }
+
+  await particularHabitItem.deleteOne();
+  await habitList.save();
+
+  return new ApiResponse(
+    200,
+    { message: "Successfully deleted item in habit list" },
+    "Successfully deleted item in habit list"
+  );
+};
+
+const getTodaysHabitsService = async (userId, today) => {
+  const habitList = await HabitList.findOne({ userId });
+  if (!habitList) {
+    return new ApiResponse(
+      200,
+      { habits: [] },
+      "Successfully fetched todays habits of user"
+    );
+  }
+
+  const todaysHabits = habitList.habitItems.filter((habit) =>
+    habit.selectedDays.includes(today)
+  );
+  return new ApiResponse(
+    200,
+    { habits: todaysHabits || [] },
+    "Successfully fetched todays habits of user"
+  );
+};
+
+const getAllHabitsService = async (userId) => {
+  const habitList = await HabitList.findOne({ userId });
+  if (!habitList) {
+    return new ApiResponse(
+      200,
+      { habits: [] },
+      "Successfully fetched all habits of user"
+    );
   }
 
   return new ApiResponse(
     200,
-    { message: "Habit updated successfully", habit },
-    "Successfully updated"
+    { habits: habitList?.habitItems || [] },
+    "Successfully fetched all habits of user"
   );
 };
-
-const deleteHabitService = async (habitId) => {
-  const habit = await Habit.findByIdAndDelete(habitId);
-
-  if (!habit) {
-    throw new ApiError(404, { message: "Habit not found" }, "Habit not found");
-  }
-
-  return new ApiResponse(200, { message: "Habit deleted successfully" });
-};
-
-const markHabitCompleteService = async (habitId, date, isComplete) => {
-  const habit = await Habit.findById(habitId);
-
-  if (!habit) {
-    throw new ApiError(404, { error: "Habit not found" });
-  }
-
-  const completionEntry = habit.completionStatus.find(
-    (entry) => entry.date.toISOString().split("T")[0] === date.split("T")[0]
-  );
-
-  if (completionEntry) {
-    completionEntry.isComplete = isComplete;
-  } else {
-    habit.completionStatus.push({ date: new Date(date), isComplete });
-  }
-
-  await habit.save();
-  return new ApiResponse(200, { message: "Habit status updated successfully" });
-};
-
 export {
   createHabitService,
-  deleteHabitService,
+  deleteParticularItemFromHabitListOfUserService,
+  getAllHabitsService,
   getTodaysHabitsService,
-  markHabitCompleteService,
   updateHabitService,
 };
