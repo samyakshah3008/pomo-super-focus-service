@@ -158,3 +158,27 @@ export const workingFrameworkTemplates = [
     createdBy: "PomoSuperFocus Team",
   },
 ];
+
+export const defaultSettings = {
+  time: {
+    studyTime: 25,
+    shortBreak: 5,
+    longBreak: 15,
+  },
+  studyOptions: {
+    autoStartStudyTimer: true,
+    autoPlayStudyMusic: true,
+    studyMusicSource: "youtube",
+    studyMusicPlaylistId: "7NOSDKb0HlU",
+  },
+  breakOptions: {
+    autoStartBreakTimer: true,
+    autoPlayBreakTimer: true,
+    breakMusicSource: "youtube",
+    breakMusicPlaylistId: "qRTVg8HHzUo",
+    longBreakInterval: 4,
+  },
+  uiOptions: {
+    backgroundImageUrl: "https://ik.imagekit.io/flotes/city-bg.jpg",
+  },
+};
