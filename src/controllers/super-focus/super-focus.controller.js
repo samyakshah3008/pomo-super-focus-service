@@ -45,16 +45,38 @@ const addPomodoro = asyncHandler(async (req, res) => {
     userId,
   });
 
-  let prepareNewPomodoro = {
+  if (!findSuperFocusUserRecord) {
+    return res.status(404).json({ message: "User record not found" });
+  }
+
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+
+  // Get today's pomodoros
+  const todaysPomodoros = findSuperFocusUserRecord.userPomodorosRecord.filter(
+    (pomodoro) => pomodoro.date >= startOfDay && pomodoro.date <= endOfDay
+  );
+
+  // Calculate if it's time for a long break
+  const longBreakInterval =
+    findSuperFocusUserRecord.settings?.breakOptions?.longBreakInterval || 4;
+  const shouldGoToLongBreak =
+    (todaysPomodoros.length + 1) % longBreakInterval === 0;
+
+  // Add the new pomodoro
+  const prepareNewPomodoro = {
     date: new Date(),
     focusTime: studyFocusTime,
   };
-
   findSuperFocusUserRecord.userPomodorosRecord.push(prepareNewPomodoro);
   await findSuperFocusUserRecord.save();
-  return res
-    .status(200)
-    .json({ message: "new pomodoro completed and added successfully!" });
+
+  return res.status(200).json({
+    message: "New pomodoro completed and added successfully!",
+    shouldGoToLongBreak,
+    todaySessionCompletedCount: todaysPomodoros.length + 1,
+  });
 });
 
 const updateSuperFocusSettings = asyncHandler(async (req, res) => {
