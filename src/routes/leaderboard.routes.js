@@ -9,6 +9,6 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 router.route("/weekly").get(verifyJWT, getLeaderboardOfTheWeek);
-router.route("/weekly/:id").get(verifyJWT, getUserRankOfTheWeek);
+router.route("/weekly/user-rank").get(verifyJWT, getUserRankOfTheWeek);
 
 export default router;

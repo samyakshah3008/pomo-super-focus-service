@@ -11,7 +11,7 @@ import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getUserDetailsController = asyncHandler(async (req, res) => {
-  const { userId } = req.query;
+  const userId = req?.user?._id;
 
   if (!userId) {
     return res
@@ -38,14 +38,15 @@ const getUserDetailsController = asyncHandler(async (req, res) => {
         new ApiError(
           500,
           { message: error?.message },
-          "something went wrong while getting daily progress stats. "
+          "something went wrong while getting user details!"
         )
       );
   }
 });
 
 const updateUserDetailsController = asyncHandler(async (req, res) => {
-  const { userId, isGreetingModalShown } = req.body;
+  const { isGreetingModalShown } = req.body;
+  const userId = req?.user?._id;
 
   if (!userId) {
     return res

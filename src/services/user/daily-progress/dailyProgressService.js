@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
-import { Pomodoros } from "../../../models/pomodoro.model.js";
+import { SuperFocusUserRecord } from "../../../models/super-focus.model.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
 import { getYesterdayDateRange } from "../../../utils/helper-functions.js";
 
 const getDailyProgressStatsService = async (userId) => {
   const { startOfYesterday, endOfYesterday } = getYesterdayDateRange();
 
-  const results = await Pomodoros.aggregate([
+  const results = await SuperFocusUserRecord.aggregate([
     {
       $match: {
         userId: new mongoose.Types.ObjectId(userId),

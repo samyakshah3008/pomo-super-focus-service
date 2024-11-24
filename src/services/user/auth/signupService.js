@@ -1,4 +1,4 @@
-import { generateOTP, guestUserDetails } from "../../../constants.js";
+import { generateOTP } from "../../../constants.js";
 import { OTP } from "../../../models/otp.model.js";
 import { User } from "../../../models/user.model.js";
 import { ApiError } from "../../../utils/ApiError.js";
@@ -82,8 +82,8 @@ const verifyOTPAndRegisterUser = async (userDetails, otp) => {
   };
 };
 
-const signupGuest = async () => {
-  const { firstName, lastName, isGuestUser = true } = guestUserDetails;
+const signupGuest = async (guestUser) => {
+  const { firstName, lastName, isGuestUser = true } = guestUser;
 
   const user = await User.create({
     firstName,

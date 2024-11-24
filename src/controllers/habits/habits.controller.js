@@ -1,46 +1,44 @@
 import moment from "moment";
 import {
   createHabitService,
-  deleteHabitService,
+  deleteParticularItemFromHabitListOfUserService,
+  getAllHabitsService,
   getTodaysHabitsService,
-  markHabitCompleteService,
   updateHabitService,
 } from "../../services/habits/habitsService.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
 
-const createHabit = async (req, res) => {
+const createHabit = asyncHandler(async (req, res) => {
+  const {
+    defineHabitText,
+    getSpecificText,
+    identityText,
+    repeat,
+    selectedDays,
+  } = req.body;
+  const userId = req?.user?._id;
+
+  if (
+    !defineHabitText?.length ||
+    !getSpecificText?.length ||
+    !identityText?.length ||
+    !repeat?.length ||
+    !selectedDays?.length
+  ) {
+    return res.status(400).json(new ApiError(400, null, "Missing fields!"));
+  }
+
   try {
-    const {
-      userId,
-      title,
-      repeat,
-      selectedDays,
-      dailyReminder,
-      reminderTime,
-      categories,
-    } = req.body;
-
-    if (
-      !title ||
-      !selectedDays ||
-      selectedDays.length === 0 ||
-      !categories ||
-      categories.length === 0
-    ) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
     const response = await createHabitService(
       userId,
-      title,
+      defineHabitText,
+      getSpecificText,
+      identityText,
       repeat,
-      selectedDays,
-      dailyReminder,
-      reminderTime,
-      categories
+      selectedDays
     );
-
-    return res.status(200).json(response);
+    return res.status(201).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
@@ -55,74 +53,38 @@ const createHabit = async (req, res) => {
         )
       );
   }
-};
-
-const getTodaysHabits = async (req, res) => {
+});
+const updateHabit = asyncHandler(async (req, res) => {
   const {
-    userId,
-    todayStart = moment().startOf("day"),
-    todayEnd = moment().endOf("day"),
-    currentDay = todayStart.format("dddd"),
-  } = req.query;
+    defineHabitText,
+    getSpecificText,
+    identityText,
+    repeat,
+    selectedDays,
+    habitId,
+  } = req.body;
+  const userId = req?.user?._id;
 
-  try {
-    const response = await getTodaysHabitsService(
-      userId,
-      todayStart,
-      todayEnd,
-      currentDay
-    );
-    return res.status(200).json(response);
-  } catch (error) {
-    if (error instanceof ApiError) {
-      return res.status(error.statusCode).json(error);
-    }
-    return res
-      .status(500)
-      .json(
-        new ApiError(
-          500,
-          { message: error?.message },
-          "something went wrong while updating daily progress stats. "
-        )
-      );
+  if (
+    !defineHabitText?.length ||
+    !getSpecificText?.length ||
+    !identityText?.length ||
+    !repeat?.length ||
+    !selectedDays?.length
+  ) {
+    return res.status(400).json(new ApiError(400, null, "Missing fields!"));
   }
-};
 
-const updateHabit = async (req, res) => {
   try {
-    const { habitId } = req.params;
-    const {
-      userId,
-      title,
-      repeat,
-      selectedDays,
-      dailyReminder,
-      reminderTime,
-      categories,
-    } = req.body;
-
-    if (
-      !title ||
-      !selectedDays ||
-      selectedDays.length === 0 ||
-      !categories ||
-      categories.length === 0
-    ) {
-      res.status(400).json({ error: "Missing required fields" });
-    }
-
     const response = await updateHabitService(
-      habitId,
       userId,
-      title,
+      defineHabitText,
+      getSpecificText,
+      identityText,
       repeat,
       selectedDays,
-      dailyReminder,
-      reminderTime,
-      categories
+      habitId
     );
-
     return res.status(200).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -138,16 +100,17 @@ const updateHabit = async (req, res) => {
         )
       );
   }
-};
+});
 
-const deleteHabit = async (req, res) => {
-  const { habitId } = req.params;
-  if (!habitId) {
-    return res.status(400).json({ error: "Habit id is required!" });
-  }
+const deleteHabit = asyncHandler(async (req, res) => {
+  const { habitId } = req.query;
+  const user = req?.user;
 
   try {
-    const response = await deleteHabitService(habitId);
+    const response = await deleteParticularItemFromHabitListOfUserService(
+      user,
+      habitId
+    );
     return res.status(200).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -159,18 +122,17 @@ const deleteHabit = async (req, res) => {
         new ApiError(
           500,
           { message: error?.message },
-          "something went wrong while updating daily progress stats. "
+          "something went wrong updating item to habit list"
         )
       );
   }
-};
+});
 
-const markHabitComplete = async (req, res) => {
-  const { habitId } = req.params;
-  const { date, isComplete = true } = req.body;
-
+const getTodaysHabits = asyncHandler(async (req, res) => {
   try {
-    const response = markHabitCompleteService(habitId, date, isComplete);
+    const userId = req.user?._id;
+    const today = moment().format("ddd");
+    const response = await getTodaysHabitsService(userId, today);
     return res.status(200).json(response);
   } catch (error) {
     if (error instanceof ApiError) {
@@ -182,16 +144,31 @@ const markHabitComplete = async (req, res) => {
         new ApiError(
           500,
           { message: error?.message },
-          "something went wrong while updating daily progress stats. "
+          "something went wrong fetching item from habit list"
         )
       );
   }
-};
+});
 
-export {
-  createHabit,
-  deleteHabit,
-  getTodaysHabits,
-  markHabitComplete,
-  updateHabit,
-};
+const getAllHabits = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    const response = await getAllHabitsService(userId);
+    return res.status(200).json(response);
+  } catch (error) {
+    if (error instanceof ApiError) {
+      return res.status(error.statusCode).json(error);
+    }
+    return res
+      .status(500)
+      .json(
+        new ApiError(
+          500,
+          { message: error?.message },
+          "something went wrong fetching item from habit list"
+        )
+      );
+  }
+});
+
+export { createHabit, deleteHabit, getAllHabits, getTodaysHabits, updateHabit };

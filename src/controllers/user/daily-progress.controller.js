@@ -3,7 +3,7 @@ import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const getDailyProgressStatsController = asyncHandler(async (req, res) => {
-  const { userId } = req.query;
+  const userId = req?.user?._id;
 
   if (!userId) {
     return res
