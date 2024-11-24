@@ -83,12 +83,13 @@ const verifyOTPAndRegisterUser = async (userDetails, otp) => {
 };
 
 const signupGuest = async (guestUser) => {
-  const { firstName, lastName, isGuestUser = true } = guestUser;
+  const { firstName, lastName, email, isGuestUser = true } = guestUser;
 
   const user = await User.create({
     firstName,
     lastName,
     isGuestUser,
+    email,
   });
 
   const registeredUser = await User.findById(user._id).select("-refreshToken");
