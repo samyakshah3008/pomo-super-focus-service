@@ -64,8 +64,11 @@ const verifyOTPAndRegisterUserController = asyncHandler(
 );
 
 const signupGuestController = asyncHandler(async (req, res) => {
+  const { guestUser } = req?.body;
   try {
-    const { accessToken, refreshToken, registeredUser } = await signupGuest();
+    const { accessToken, refreshToken, registeredUser } = await signupGuest(
+      guestUser
+    );
     const user = registeredUser;
 
     return res
@@ -80,7 +83,6 @@ const signupGuestController = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    console.log(error, "here from signup guest controller");
     if (error instanceof ApiError) {
       return res.status(error.statusCode).json(error);
     }

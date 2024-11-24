@@ -6,7 +6,8 @@ import { ApiError } from "../../utils/ApiError.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 
 const logDailyStreak = asyncHandler(async (req, res) => {
-  const { userId, currentDate } = req.query;
+  const { currentDate } = req.query;
+  const userId = req?.user?._id;
 
   if (!userId) {
     return res.status(400).json(new ApiError(400, null, "User ID required. "));

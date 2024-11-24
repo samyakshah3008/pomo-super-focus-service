@@ -166,19 +166,83 @@ export const defaultSettings = {
     longBreak: 15,
   },
   studyOptions: {
-    autoStartStudyTimer: true,
-    autoPlayStudyMusic: true,
-    studyMusicSource: "youtube",
-    studyMusicPlaylistId: "7NOSDKb0HlU",
+    autoStartStudyTimer: false,
+    autoPlayStudyMusic: false,
+    studyMusicSource: "spotify",
+    studyMusicPlaylistId: "0vvXsWCC9xrXsKd4FyS8kM",
   },
   breakOptions: {
-    autoStartBreakTimer: true,
-    autoPlayBreakTimer: true,
+    autoStartBreakTimer: false,
+    autoPlayBreakTimer: false,
     breakMusicSource: "youtube",
     breakMusicPlaylistId: "qRTVg8HHzUo",
     longBreakInterval: 4,
   },
   uiOptions: {
-    backgroundImageUrl: "https://ik.imagekit.io/flotes/city-bg.jpg",
+    theme: "tmkoc",
   },
 };
+
+export const checklistsConstants = [
+  {
+    title:
+      "Complete onboarding and accept our request to feed a stray animal. ",
+    content: "Welcome onboard!!! Witch is super happy to have you;)",
+    completed: true,
+  },
+  {
+    title: "Complete your first pomodoro session!",
+    content:
+      "Time to bring the focus momentum and kick off with your first pomodoro session!",
+    completed: false,
+  },
+  {
+    title:
+      "Create your habit - either breaking bad habit or building good habit!",
+    content:
+      "Time to bring out your best potential! Let's create habits and achieve the best!",
+    completed: false,
+  },
+  {
+    title: "Create your working framework!",
+    content:
+      "It's crucial to create a working framework so you can follow it and make the most of each day!",
+    completed: false,
+  },
+  {
+    title: "Create your first goal",
+    content:
+      "You can't achieve success without clarity. So, create your first goal today!",
+    completed: false,
+  },
+  {
+    title: "Create your first task",
+    content:
+      "Dividing your work in chunks helps to achieve faster. So, create your first task today!",
+    completed: false,
+  },
+  {
+    title: "Document your first life event in You vs You!",
+    content:
+      "Time flies, see how far you have reached by making habit of documenting ups and downs!",
+    completed: false,
+  },
+  {
+    title: "Add your first gratitude!",
+    content: "Be grateful! Add your first gratitude today!",
+    completed: false,
+  },
+  {
+    title: "Add your first bucket list item!",
+    content:
+      "Maintain a bucket list by adding your manifested bucket list items;)",
+    completed: false,
+  },
+  {
+    title:
+      "Set your estimated life span today to see how much time you have left!",
+    content:
+      "Track your life, be aware you have limited life span and take a pause to review are you really moving towards your end goal?",
+    completed: false,
+  },
+];

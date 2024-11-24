@@ -80,7 +80,7 @@ const superFocusSchema = new Schema(
         },
       },
       uiOptions: {
-        backgroundImageUrl: {
+        theme: {
           type: String,
           required: true,
         },

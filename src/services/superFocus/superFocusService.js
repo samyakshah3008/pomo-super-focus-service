@@ -1,3 +1,4 @@
+import { defaultSettings } from "../../constants.js";
 import { ActivePomodoros } from "../../models/active-pomodoro.model.js";
 import { SuperFocusUserRecord } from "../../models/super-focus.model.js";
 import { ApiError } from "../../utils/ApiError.js";

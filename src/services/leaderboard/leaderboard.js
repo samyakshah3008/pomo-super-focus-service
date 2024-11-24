@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { Pomodoros } from "../../models/pomodoro.model.js";
+import { SuperFocusUserRecord } from "../../models/super-focus.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 import { getWeekTimeline } from "../../utils/dateUtils.js";
@@ -8,7 +8,7 @@ const getLeaderboardOfTheWeekService = async () => {
   try {
     const { startOfWeek, endOfWeek } = getWeekTimeline();
 
-    const leaderboard = await Pomodoros.aggregate([
+    const leaderboard = await SuperFocusUserRecord.aggregate([
       {
         $match: {
           date: {
@@ -80,7 +80,7 @@ const getUserRankOfTheWeekService = async (userId) => {
 
     const objectIdUserId = new Types.ObjectId(userId);
 
-    const result = await Pomodoros.aggregate([
+    const result = await SuperFocusUserRecord.aggregate([
       {
         $match: {
           date: {

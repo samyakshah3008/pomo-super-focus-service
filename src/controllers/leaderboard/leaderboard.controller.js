@@ -27,7 +27,7 @@ const getLeaderboardOfTheWeek = asyncHandler(async (req, res) => {
 
 const getUserRankOfTheWeek = asyncHandler(async (req, res) => {
   try {
-    let { id } = req.params;
+    const id = req?.user?._id;
     if (!id) {
       throw new ApiError(
         400,
