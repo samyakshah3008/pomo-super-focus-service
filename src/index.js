@@ -15,3 +15,7 @@ connectDB()
   .catch((error) => {
     console.error("Something went wrong to the root of the service", error);
   });
+
+app.use("/test", (req, res) => {
+  res.json({ message: "Hello from express app" });
+});
