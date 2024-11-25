@@ -85,6 +85,15 @@ const verifyOTPAndRegisterUser = async (userDetails, otp) => {
 const signupGuest = async (guestUser) => {
   const { firstName, lastName, email, isGuestUser = true } = guestUser;
 
+  const findRegisteredUserWithEmail = await User.findOne({ email });
+
+  if (findRegisteredUserWithEmail) {
+    throw new ApiError(500, {
+      message:
+        "User with this email already exists! Please try with different email!",
+    });
+  }
+
   const user = await User.create({
     firstName,
     lastName,
@@ -96,7 +105,7 @@ const signupGuest = async (guestUser) => {
 
   if (!registeredUser) {
     throw new ApiError(500, {
-      error: "Something went wrong while registering user.",
+      message: "Something went wrong while registering user.",
     });
   }
 
