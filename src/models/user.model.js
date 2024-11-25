@@ -58,6 +58,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    hasBetaAccess: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
