@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { DB_NAME } from "../constants.js";
 
 import dotenv from "dotenv";
 
@@ -9,9 +8,10 @@ dotenv.config({
 
 const connectDB = async () => {
   try {
-    const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}/${DB_NAME}`
+    await mongoose.connect(
+      "mongodb+srv://samyakshah3008:qtO2cNVGp5k2WuAx@pomosuperfocuscluster.cfigglv.mongodb.net/POMO_SUPER_FOCUS_DB"
     );
+    console.log(process.env.MONGODB_URI, "skwdn");
     console.log(`\n MongoDB connected: !! DB Host `);
   } catch (error) {
     console.error("MONGODB Connection failed", error);
