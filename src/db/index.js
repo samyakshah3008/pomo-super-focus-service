@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 import dotenv from "dotenv";
-import { DB_NAME } from "../constants.js";
 
 dotenv.config({
   path: "../../.env",
@@ -12,7 +11,7 @@ const connectDB = async () => {
     // await mongoose.connect(
     //   "mongodb+srv://samyakshah3008:qtO2cNVGp5k2WuAx@pomosuperfocuscluster.cfigglv.mongodb.net/POMO_SUPER_FOCUS_DB"
     // );
-    await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`);
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log(process.env.MONGODB_URI, "skwdn");
     console.log(`\n MongoDB connected: !! DB Host `);
   } catch (error) {
