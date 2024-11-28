@@ -8,11 +8,7 @@ dotenv.config({
 
 const connectDB = async () => {
   try {
-    // await mongoose.connect(
-    //   "mongodb+srv://samyakshah3008:qtO2cNVGp5k2WuAx@pomosuperfocuscluster.cfigglv.mongodb.net/POMO_SUPER_FOCUS_DB"
-    // );
     await mongoose.connect(process.env.MONGODB_URI);
-    console.log(process.env.MONGODB_URI, "skwdn");
     console.log(`\n MongoDB connected: !! DB Host `);
   } catch (error) {
     console.error("MONGODB Connection failed", error);
