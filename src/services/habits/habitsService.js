@@ -1,4 +1,5 @@
 import { HabitList } from "../../models/habits.model.js";
+import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -30,6 +31,15 @@ const createHabitService = async (
   }
 
   await habitList.save();
+
+  const findUser = await User.findById(userId);
+
+  const findItemObj = findUser.checklists.find((item) => item?.key === "habit");
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return new ApiResponse(201, newHabit, "Successfully created new habit!");
 };

@@ -1,6 +1,7 @@
 import moment from "moment";
 import mongoose from "mongoose";
 import { GratitudeList } from "../../models/gratitude.model.js";
+import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -38,6 +39,17 @@ const addItemToGratitudeListOfUserService = async (user, gratitudeItem) => {
   }
 
   await gratitudeList.save();
+
+  const findUser = await User.findById(user?._id);
+
+  const findItemObj = findUser.checklists.find(
+    (item) => item?.key === "gratitude"
+  );
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return new ApiResponse(
     201,

@@ -1,5 +1,7 @@
+import moment from "moment";
 import mongoose from "mongoose";
 import { SelfReviewList } from "../../models/self-review.model.js";
+import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -16,9 +18,10 @@ const getSelfReviewListItemsOfUserService = async (user) => {
     );
   }
 
+  // Group items by year
   const selfReviewItemsByYear = selfReviewList.selfReviewItems.reduce(
     (acc, item) => {
-      const year = new Date(item.date).getFullYear();
+      const year = moment(item.date).year(); // Use moment to extract the year
       if (!acc[year]) {
         acc[year] = [];
       }
@@ -27,6 +30,13 @@ const getSelfReviewListItemsOfUserService = async (user) => {
     },
     {}
   );
+
+  // Sort items in each year group by date in ascending order
+  for (const year in selfReviewItemsByYear) {
+    selfReviewItemsByYear[year].sort((a, b) =>
+      moment(a.date).diff(moment(b.date))
+    );
+  }
 
   return new ApiResponse(
     200,
@@ -56,6 +66,17 @@ const addItemToSelfReviewListOfUserService = async (user, selfReviewItem) => {
   }
 
   await selfReviewItemsList.save();
+
+  const findUser = await User.findById(user?._id);
+
+  const findItemObj = findUser.checklists.find(
+    (item) => item?.key === "selfReview"
+  );
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return new ApiResponse(
     201,

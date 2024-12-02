@@ -44,6 +44,15 @@ const activateWorkingFrameworkService = async (userId, workingFramework) => {
   user.isWorkingFrameworkActivated = true;
   user.workingFramework = workingFramework;
 
+  const findItemObj = user.checklists.find(
+    (item) => item?.key === "workingFramework"
+  );
+
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    user.markModified("checklists");
+  }
+
   await user.save();
 
   return new ApiResponse(
@@ -60,6 +69,16 @@ const updateUserLifeSpanService = async (user, birthDate, estimateLifeSpan) => {
   if (!user.isMyLifeOnboardingComplete) {
     user.isMyLifeOnboardingComplete = true;
   }
+
+  const findItemObj = user.checklists.find(
+    (item) => item?.key === "lifeOnboarding"
+  );
+
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    user.markModified("checklists");
+  }
+
   await user.save();
 
   return new ApiResponse(

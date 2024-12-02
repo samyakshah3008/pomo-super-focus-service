@@ -185,60 +185,71 @@ export const defaultSettings = {
 
 export const checklistsConstants = [
   {
+    key: "onboarding",
     title:
       "Complete onboarding and accept our request to feed a stray animal. ",
     content: "Welcome onboard!!! Witch is super happy to have you;)",
     completed: true,
   },
   {
+    key: "pomodoro",
     title: "Complete your first pomodoro session!",
     content:
       "Time to bring the focus momentum and kick off with your first pomodoro session!",
     completed: false,
   },
   {
+    key: "habit",
     title:
       "Create your habit - either breaking bad habit or building good habit!",
     content:
       "Time to bring out your best potential! Let's create habits and achieve the best!",
     completed: false,
   },
+
   {
+    key: "workingFramework",
     title: "Create your working framework!",
     content:
       "It's crucial to create a working framework so you can follow it and make the most of each day!",
     completed: false,
   },
   {
+    key: "goal",
     title: "Create your first goal",
     content:
       "You can't achieve success without clarity. So, create your first goal today!",
     completed: false,
   },
   {
+    key: "task",
     title: "Create your first task",
     content:
       "Dividing your work in chunks helps to achieve faster. So, create your first task today!",
     completed: false,
   },
   {
+    key: "selfReview",
     title: "Document your first life event in You vs You!",
     content:
       "Time flies, see how far you have reached by making habit of documenting ups and downs!",
     completed: false,
   },
   {
+    key: "gratitude",
     title: "Add your first gratitude!",
     content: "Be grateful! Add your first gratitude today!",
     completed: false,
   },
   {
+    key: "bucketItem",
     title: "Add your first bucket list item!",
     content:
       "Maintain a bucket list by adding your manifested bucket list items;)",
     completed: false,
   },
   {
+    key: "lifeOnboarding",
     title:
       "Set your estimated life span today to see how much time you have left!",
     content:

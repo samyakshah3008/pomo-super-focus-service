@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { BucketList } from "../../models/bucket-list.model.js";
+import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -36,6 +37,18 @@ const addItemToBucketListOfUserService = async (user, bucketItem) => {
   }
 
   await bucketList.save();
+
+  const findUser = await User.findById(user?._id);
+
+  const findItemObj = findUser.checklists.find(
+    (item) => item?.key === "bucketItem"
+  );
+
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return new ApiResponse(
     201,

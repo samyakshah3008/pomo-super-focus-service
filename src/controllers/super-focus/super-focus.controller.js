@@ -1,5 +1,6 @@
 import { ActivePomodoros } from "../../models/active-pomodoro.model.js";
 import { SuperFocusUserRecord } from "../../models/super-focus.model.js";
+import { User } from "../../models/user.model.js";
 import {
   deleteActivePomodoroService,
   fetchSuperFocusDetailsService,
@@ -71,6 +72,18 @@ const addPomodoro = asyncHandler(async (req, res) => {
   };
   findSuperFocusUserRecord.userPomodorosRecord.push(prepareNewPomodoro);
   await findSuperFocusUserRecord.save();
+
+  const findUser = await User.findById(userId);
+
+  const findItemObj = findUser.checklists.find(
+    (item) => item?.key === "pomodoro"
+  );
+
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return res.status(200).json({
     message: "New pomodoro completed and added successfully!",
