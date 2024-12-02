@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { GoalList } from "../../models/goal.model.js";
+import { User } from "../../models/user.model.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
@@ -39,6 +40,15 @@ const addItemToGoalListOfUserService = async (user, goalItem) => {
   }
 
   await goalList.save();
+
+  const findUser = await User.findById(user?._id);
+
+  const findItemObj = findUser.checklists.find((item) => item?.key === "goal");
+  if (!findItemObj?.completed) {
+    findItemObj.completed = true;
+    findUser.markModified("checklists");
+    await findUser.save();
+  }
 
   return new ApiResponse(
     201,
