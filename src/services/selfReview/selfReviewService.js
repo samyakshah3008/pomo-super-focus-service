@@ -38,6 +38,14 @@ const getSelfReviewListItemsOfUserService = async (user) => {
     );
   }
 
+  const currentYear = moment().year();
+  const minYear = Math.min(...Object.keys(selfReviewItemsByYear).map(Number));
+  for (let year = minYear; year <= currentYear; year++) {
+    if (!selfReviewItemsByYear[year]) {
+      selfReviewItemsByYear[year] = [];
+    }
+  }
+
   return new ApiResponse(
     200,
     { selfReviewListItems: selfReviewItemsByYear },
